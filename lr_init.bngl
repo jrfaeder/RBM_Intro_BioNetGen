@@ -12,7 +12,7 @@ begin molecule types
 end molecule types
 
 begin species
-  L(r) L0
+  L(r) L0 # a comment
   R(l) 100
 end species
 
