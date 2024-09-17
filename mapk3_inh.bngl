@@ -1,0 +1,93 @@
+begin model
+
+begin parameters
+  k1 1e-5
+  k2 0.1
+  kkin 0.1
+  kptp 3e-3
+  kin_inh_factor 0.1
+end parameters
+
+begin molecule types
+  Ras(c)
+  Raf(c,S~0~P)
+  PP2A(c)
+  MKP(c)
+  MEK(c,S218~0~P,S222~0~P)
+  ERK(c,T185~0~P,Y187~0~P)
+end molecule types
+
+begin species
+  Ras(c) 6e4
+  Raf(c,S~0) 7e4
+  PP2A(c)  2e5
+  MKP(c) 1.7e4
+  MEK(c,S218~0,S222~0) 3e6
+  ERK(c,T185~0,Y187~0) 7e5
+end species
+
+begin observables
+  Molecules RasRaf Ras(c!1).Raf(S!1)
+  Molecules pRaf Raf(S~P)
+  Molecules ppMEK MEK(S218~P,S222~P)
+  Molecules ppERK ERK(T185~P,Y187~P)
+end observables
+
+begin functions
+  kin_inh() kkin*kin_inh_factor
+end functions
+
+begin reaction rules
+  Ras_Raf_bind: \
+    Ras(c) + Raf(S~0) <-> Ras(c!1).Raf(S~0!1) k1, k2 
+  Ras_Raf_catalyze: \
+    Ras(c!1).Raf(S~0!1) -> Ras(c) + Raf(S~P) kin_inh()
+  PP2A_Raf_bind: \ 
+    PP2A(c) + Raf(c,S~P) <-> PP2A(c!1).Raf(c,S~P!1) k1, k2
+  PP2A_Raf_catalyze: \
+    PP2A(c!1).Raf(c,S~P!1) -> PP2A(c) + Raf(c,S~0) kptp
+
+  # Ordered distributive dual phosphorylation of MEK
+  Raf_MEKS218_bind: \
+    Raf(c,S~P) + MEK(S218~0,S222~0) <-> Raf(c!1,S~P).MEK(S218~0!1,S222~0) k1, k2
+  Raf_MEKS218_catalyze: \
+    Raf(c!1,S~P).MEK(S218~0!1) -> Raf(c,S~P) + MEK(S218~P) kkin
+  Raf_MEKS222_bind: \
+    Raf(c,S~P) + MEK(S218~P,S222~0) <-> Raf(c!1,S~P).MEK(S218~P,S222~0!1) k1, k2
+  Raf_MEKS222_catalyze: \
+    Raf(c!1,S~P).MEK(S222~0!1) -> Raf(c,S~P) + MEK(S222~P) kkin
+  # Ordered dephosphorylation of MEK
+  PP2A_MEKS218_bind: \
+    PP2A(c) + MEK(c,S218~P,S222~0) <-> PP2A(c!1).MEK(c,S218~P!1,S222~0) k1, k2
+  PP2A_MEKS218_catalyze: \
+    PP2A(c!1).MEK(c,S218~P!1) -> PP2A(c) + MEK(c,S218~0) kptp
+  PP2A_MEKS222_bind: \
+    PP2A(c) + MEK(c,S218~P,S222~P) <-> PP2A(c!1).MEK(c,S218~P,S222~P!1) k1, k2
+  PP2A_MEKS222_catalyze: \
+    PP2A(c!1).MEK(c,S222~P!1) -> PP2A(c) + MEK(c,S222~0) kptp
+
+  # Ordered distributive dual phosphorylation of ERK
+  MEK_ERKT185_bind: \
+     MEK(c,S218~P,S222~P) + ERK(T185~0,Y187~0) <-> MEK(c!1,S218~P,S222~P).ERK(T185~0!1,Y187~0) k1, k2
+  MEK_ERKT185_catalyze: \
+    MEK(c!1,S218~P,S222~P).ERK(T185~0!1) -> MEK(c,S218~P,S222~P) + ERK(T185~P) kkin
+  MEK_ERKY187_bind: \
+     MEK(c,S218~P,S222~P) + ERK(T185~P,Y187~0) <-> MEK(c!1,S218~P,S222~P).ERK(T185~P,Y187~0!1) k1, k2
+  MEK_ERKY187_catalyze: \
+    MEK(c!1,S218~P,S222~P).ERK(Y187~0!1) -> MEK(c,S218~P,S222~P) + ERK(Y187~P) kkin
+
+  # Ordered dephosphorylation of ERK
+  MKP_ERKT185_bind: \
+     MKP(c) + ERK(T185~P,Y187~0) <-> MKP(c!1).ERK(T185~P!1,Y187~0) k1, k2
+  MKP_ERKT185_catalyze: \
+     MKP(c!1).ERK(T185~P!1) -> MKP(c) + ERK(T185~0) kptp
+  MKP_ERKY187_bind: \
+     MKP(c) + ERK(T185~P,Y187~P) <-> MKP(c!1).ERK(T185~P,Y187~P!1) k1, k2
+  MKP_ERKY187_catalyze: \
+     MKP(c!1).ERK(Y187~P!1) -> MKP(c) + ERK(Y187~0) kptp
+
+end reaction rules
+
+end model
+
+simulate({method=>"ode",t_end=>5000,n_steps=>200})

@@ -1,0 +1,28 @@
+begin model
+
+begin parameters
+  kp1 1e-3
+  km1 1e-3
+end parameters
+
+begin molecule types
+  L(r)
+  R(l)
+end molecule types
+
+begin species
+  L(r) 200
+  R(l) 100
+end species
+
+begin observables
+  Molecules LR L(r!1).R(l!1)
+end observables
+
+begin reaction rules
+  LRbind: L(r) + R(l) <-> L(r!1).R(l!1) kp1, km1
+end reaction rules
+
+end model
+
+simulate({method=>"ode",t_end=>100,n_steps=>200})

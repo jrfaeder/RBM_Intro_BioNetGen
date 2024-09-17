@@ -1,0 +1,40 @@
+begin model
+
+begin parameters
+  k1 1e-5
+  k2 0.1
+  kkin 0.1
+  kptp 3e-3
+end parameters
+
+begin molecule types
+  Ras(c)
+  Raf(c,S~0~P)
+  PP2A(c)
+end molecule types
+
+begin species
+  Ras(c) 6e4
+  Raf(c,S~0) 7e4
+  PP2A(c)  2e5
+end species
+
+begin observables
+  Molecules RasRaf Ras(c!1).Raf(S!1)
+  Molecules RafP Raf(S~P)
+end observables
+
+begin reaction rules
+  Ras_Raf_bind: \
+    Ras(c) + Raf(S~0) <-> Ras(c!1).Raf(S~0!1) k1, k2 # What's the possible problem here?
+  Ras_Raf_catalyze: \
+    Ras(c!1).Raf(S~0!1) -> Ras(c) + Raf(S~P) kkin
+  PP2A_Raf_bind: \ 
+    PP2A(c) + Raf(S~P) <-> PP2A(c!1).Raf(S~P!1) k1, k2
+  PP2A_Raf_catalyze: \
+    PP2A(c!1).Raf(S~P!1) -> PP2A(c) + Raf(S~0) kptp
+end reaction rules
+
+end model
+
+simulate({method=>"ode",t_end=>100,n_steps=>200})
