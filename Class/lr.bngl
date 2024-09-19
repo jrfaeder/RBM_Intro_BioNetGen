@@ -1,0 +1,31 @@
+begin model
+
+begin parameters
+  kf 0.1
+  kr 0.1
+  L0 200
+end parameters
+
+begin molecule types
+  L(r)
+  R(l)
+end molecule types
+
+begin species
+  L(r) L0
+  R(l) 100
+end species
+
+begin observables
+  Molecules LR L(r!1).R(l!1)
+end observables
+
+begin reaction rules
+  LRbind: L(r) + R(l) <-> L(r!1).R(l!1) kf, kr
+end reaction rules
+
+end model
+
+# ACTIONS
+generate_network({overwrite=>1})
+simulate({method=>"ode",t_end=>1,n_steps=>200})

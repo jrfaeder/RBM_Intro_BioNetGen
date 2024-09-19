@@ -1,0 +1,34 @@
+begin model
+
+begin parameters
+  k1 1e-5
+  k2 0.1
+  k3 0.1
+end parameters
+
+begin molecule types
+  E(c)
+  S(Y~0~P)
+end molecule types
+
+begin species
+  E(c) 6e4
+  S(Y~0) 7e4
+end species
+
+begin observables
+  Molecules ES E(c!1).S(Y!1)
+  Molecules SU S(Y~0) # S(Y~0!?)
+  Molecules SP S(Y~P) # S(Y~P!?)
+end observables
+
+begin reaction rules
+  ESbind: \
+    E(c) + S(Y~0) <-> E(c!1).S(Y~0!1) k1, k2  
+  EScatalyze: \
+    E(c!1).S(Y~0!1) -> E(c) + S(Y~P) k3
+end reaction rules
+
+end model
+
+simulate({method=>"ode",t_end=>100,n_steps=>200})

@@ -22,6 +22,7 @@ end species
 begin observables
   Molecules RasRaf Ras(c!1).Raf(S!1)
   Molecules RafP Raf(S~P)
+  Molecules RafPtot Raf(S~P!?)
 end observables
 
 begin reaction rules
