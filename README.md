@@ -1,1 +1,1 @@
-Slides and material introducing rule-based modeling with BioNetGen and Python. Uses the VS Code extension for BioNetGen and the PyBioNetGen library with libRoadRunner for simulations.
+Slides and material introducing rule-based modeling with BioNetGen and Python. Uses the VS Code extension for BioNetGen and the PyBioNetGen library with libRoadRunner for simulations. The [fit_data.ipynb](fit_data.ipynb) notebook shows how to set up estimation of model parameters from data using the [PyPesto](https://github.com/icb-dcm/pypesto) package.
