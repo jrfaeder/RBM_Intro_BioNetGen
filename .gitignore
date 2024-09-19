@@ -1,4 +1,3 @@
-Class
 /lr
 /lr_init_sbml.xml
 /lr_sbml.xml
@@ -11,3 +10,7 @@ Class
 /mm
 /sir
 /~$MSCBIO2025-BioNetGenOverview.pptx
+/Class/lr
+/Class/lr_flat
+/Class/mm
+/Class/*.xml
