@@ -3,7 +3,7 @@ begin model
 begin parameters
   N 100
   I0 1
-  R0 2.5
+  R0 1.1
   g 0.33
   b g*R0/N
 end parameters
@@ -27,5 +27,5 @@ end reaction rules
 end model
 
 generate_network({overwrite=>1})
-simulate({method=>"ode",t_end=>30,n_steps=>200})
+simulate({method=>"ssa",t_end=>30,n_steps=>200,seed=>2})
 #parameter_scan({method=>"ode",t_end=>500,n_steps=>10,parameter=>"R0",par_min=>0,par_max=>4,n_scan_pts=>100,log_scale=>0})
