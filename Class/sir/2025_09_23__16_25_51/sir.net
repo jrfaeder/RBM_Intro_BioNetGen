@@ -1,0 +1,23 @@
+# Created by BioNetGen 2.9.3
+begin parameters
+    1 N              100  # Constant
+    2 I0             1  # Constant
+    3 R0             2.5  # Constant
+    4 g              0.33  # Constant
+    5 b              (g*R0)/N  # ConstantExpression
+    6 _InitialConc1  N-I0  # ConstantExpression
+end parameters
+begin species
+    1 S() _InitialConc1
+    2 I() I0
+    3 R() 0
+end species
+begin reactions
+    1 1,2 2,2 b #R1
+    2 2 3 g #R2
+end reactions
+begin groups
+    1 S                    1
+    2 I                    2
+    3 R                    3
+end groups

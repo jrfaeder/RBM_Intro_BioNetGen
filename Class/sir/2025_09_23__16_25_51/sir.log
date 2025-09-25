@@ -1,0 +1,41 @@
+BioNetGen version 2.9.3
+Reading from file /Users/faeder/Library/CloudStorage/OneDrive-UniversityofPittsburgh/Teaching/Python/2024/Class/sir/2025_09_23__16_25_51/sir.bngl (level 0)
+Read 5 parameters.
+Read 2 species.
+Read 3 observable(s).
+Read 2 reaction rule(s).
+ACTION: generate_network( sir )
+Iteration   0:     2 species      0 rxns  0.00e+00 CPU s
+Iteration   1:     3 species      2 rxns  1.00e-02 CPU s
+Iteration   2:     3 species      2 rxns  0.00e+00 CPU s
+Cumulative CPU time for each rule
+Rule   1:     1 reactions 1.00e-02 CPU s 1.00e-02 CPU s/rxn
+Rule   2:     1 reactions 0.00e+00 CPU s 0.00e+00 CPU s/rxn
+Total   :     2 reactions 1.00e-02 CPU s 5.00e-03 CPU s/rxn
+Wrote network in net format to ./sir.net.
+CPU TIME: generate_network 0.01 s.
+ACTION: simulate( method=>"cvode" )
+TEND:30
+Network simulation using cvode
+WARNING: writeFile(): Overwriting existing file ./sir.net.
+Wrote network in net format to ./sir.net.
+Running run_network on Jamess-MBP-5
+full command: /Users/faeder/miniconda3/lib/python3.12/site-packages/bionetgen/bng-mac/bin/run_network -o ./sir -p cvode -a 1e-08 -r 1e-08 --cdat 1 --fdat 0 -g ./sir.net ./sir.net 0.15 200
+[simulation PID is: 96192]
+run_network 3.0
+Read 6 parameters from ./sir.net
+Read 3 species from ./sir.net
+Read 3 group(s) from ./sir.net
+Read 0 function(s) from ./sir.net
+Read 2 reaction(s) from ./sir.net
+2 reaction(s) have nonzero rate
+Initialization took 0.00 CPU seconds
+Propagating with cvode using dense LU
+Time course of concentrations written to file ./sir.cdat.
+Time course of groups written to file ./sir.gdat.
+Propagation took 0.00e+00 CPU seconds
+Program times:  0.00 CPU s 0.00 clock s
+Updating species concentrations from ./sir.cdat
+CPU TIME: simulate 0.00 s.
+Finished processing file /Users/faeder/Library/CloudStorage/OneDrive-UniversityofPittsburgh/Teaching/Python/2024/Class/sir/2025_09_23__16_25_51/sir.bngl.
+CPU TIME: total 0.01 s.

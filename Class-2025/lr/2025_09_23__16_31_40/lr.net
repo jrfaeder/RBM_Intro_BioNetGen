@@ -1,0 +1,19 @@
+# Created by BioNetGen 2.9.3
+begin parameters
+    1 kf          0.1  # Constant
+    2 kr          0.1  # Constant
+end parameters
+begin species
+    1 L(r) 200
+    2 R(l) 100
+    3 L(r!1).R(l!1) 0
+end species
+begin reactions
+    1 1,2 3 kf #_R1
+    2 3 1,2 kr #_reverse__R1
+end reactions
+begin groups
+    1 L_free               1
+    2 R_free               2
+    3 LR_complex           3
+end groups
