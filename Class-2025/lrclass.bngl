@@ -1,0 +1,28 @@
+begin model
+
+begin parameters
+  kf 0.1
+  kr 0.1
+  L0 200
+  R0 100
+end parameters
+
+begin species
+  L(r) L0
+  R(l) R0
+end species
+
+begin observables
+    Molecules L_free L(r)
+    Molecules R_free R(l)
+    Molecules LR_complex L(r!1).R(l!1)
+end observables
+
+begin reaction rules
+  LRbind: L(r) + R(l) <-> L(r!1).R(l!1) kf, kr
+end reaction rules
+
+end model
+
+#actions go here
+simulate({method=>"ode",t_end=>2,n_steps=>1000})
