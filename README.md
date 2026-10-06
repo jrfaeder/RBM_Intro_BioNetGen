@@ -2,9 +2,9 @@ Slides and material introducing rule-based modeling with BioNetGen and Python. U
 
 ## Layout
 
-- `models/` — BNGL model files. `stat_step1_binding.bngl` … `stat_step6_feedback.bngl` build the Module 1 cytokine–STAT–SOCS model one reaction step at a time.
+- `models/` — BNGL model files. `stat_step1_binding.bngl` … `stat_step6_feedback.bngl` build the Module 1 cytokine–STAT–SOCS model one reaction step at a time. `stat_rbm1_rules.bngl` … `stat_rbm6_ser727.bngl` are the Module 2 rule-based versions: the same model written with structured molecules, then extended one assumption at a time.
 - `notebooks/` — Jupyter notebooks, plus the data file used for fitting (`mm.csv`) and SBML exports. Notebooks load models from `../models/`, so run them from inside `notebooks/`.
-- `Slides/` — lecture slides. `Slides/theme/` holds the shared beamer theme; each module (e.g. `Slides/module1-kinetics/`) has its own folder. The 2025 PowerPoint deck is kept for reference.
+- `Slides/` — lecture slides. `Slides/theme/` holds the shared beamer theme; each module (`Slides/module1-kinetics/`, `Slides/module2-rules/`) has its own folder. The 2025 PowerPoint deck is kept for reference.
 - `BNG-results/` — output from running models with the BioNetGen VS Code extension (see Setup below; not tracked in git)
 
 ## Setup
@@ -30,7 +30,7 @@ Your `.vscode/settings.json` is ignored by git, so your path stays local. If you
 The slides are beamer (pdflatex) and need a standard TeX Live, MacTeX, or MiKTeX install.
 
 ```
-cd Slides/module1-kinetics
+cd Slides/module1-kinetics        # or Slides/module2-rules
 latexmk module1-kinetics.tex      # PDF is written to build/
 ```
 

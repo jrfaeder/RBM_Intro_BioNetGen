@@ -1,0 +1,90 @@
+# Cytokine-STAT-SOCS signaling, rule-based version 6 of 6
+# Relaxation 5: STAT has a second, independent phosphorylation site (Ser727).
+# Units are illustrative: concentrations in uM, time in minutes.
+
+begin model
+begin parameters
+  L0         1      # ligand (uM)
+  R0         1      # receptor chains (uM)
+  S0         10     # STAT (uM)
+  G0         1      # SOCS gene promoter (uM)
+  kon        1      # ligand binding (1/uM/min)
+  kx         100    # crosslinking: second receptor binds ligand (1/uM/min)
+  koff       0.1    # ligand unbinding (1/min)
+  kSon       1      # STAT binding (1/uM/min)
+  kSoff      1      # STAT unbinding (1/min)
+  kact       1      # STAT activation (1/min)
+  kdiss      1      # pSTAT release (1/min)
+  kdephos    0.1    # pSTAT dephosphorylation (1/min)
+  kdim       1      # pSTAT dimerization (1/uM/min)
+  kundim     0.1    # pSTAT dimer dissociation (1/min)
+  kser       0.1    # Ser727 phosphorylation (1/min)
+  kserdephos 0.1    # Ser727 dephosphorylation (1/min)
+  kGon       1      # pSTAT-promoter binding (1/uM/min)
+  kGoff      1      # pSTAT-promoter unbinding (1/min)
+  ktx        1      # transcription (1/min)
+  kmdeg      0.1    # mRNA degradation (1/min)
+  ktl        0.1    # translation (1/min)
+  kSOCSdeg   0.05   # SOCS degradation (1/min)
+  kSOCSon    1      # SOCS-receptor binding (1/uM/min)
+  kSOCSoff   0.01   # SOCS-receptor unbinding (1/min)
+end parameters
+begin molecule types
+  L(r,r)                     # bivalent ligand: two identical receptor-binding sites
+  R(l,s,socs)                # receptor chain: ligand site l, STAT docking site s, SOCS site socs
+  S(r,Y~0~P,S727~0~P,d,g)    # STAT: receptor site r, tyrosine Y, serine S727, dimerization site d, DNA site g
+  G(s)                       # SOCS gene promoter with a STAT-binding site
+  mSOCS()                    # SOCS mRNA (no internal structure)
+  SOCS(r)                    # SOCS protein with a receptor-binding site
+end molecule types
+begin seed species
+  L(r,r)        L0
+  R(l,s,socs)   R0
+  S(r,Y~0,S727~0,d,g)  S0
+  G(s)          G0
+end seed species
+begin observables
+  Molecules pSTAT  S(Y~P)
+  Molecules pS727  S(S727~P)
+  Species   pSTATdimer S(d!1).S(d!1)
+  Species   Rdimer L(r!1,r!2).R(l!1).R(l!2)
+  Molecules mSOCS  mSOCS()
+  Molecules SOCS   SOCS()
+end observables
+begin reaction rules
+  # Ligand binds a free receptor
+  LRbind:     L(r,r) + R(l) <-> L(r!1,r).R(l!1)                kon, koff
+  # Ligand already bound to one receptor captures a second (receptor dimer)
+  Crosslink:  L(r!+,r) + R(l) <-> L(r!+,r!1).R(l!1)            kx, koff
+  # STAT docks on a ligand-bound receptor
+  Sbind:      R(l!+,s) + S(r,Y~0) -> R(l!+,s!1).S(r!1,Y~0)     kSon
+  # Unphosphorylated STAT undocks
+  Sunbind:    R(s!1).S(r!1,Y~0) -> R(s) + S(r,Y~0)             kSoff
+  # Receptor-associated kinase activates docked STAT
+  Sact:       L(r!+,r!2).R(l!2,socs,s!1).S(r!1,Y~0) -> L(r!+,r!2).R(l!2,socs,s!1).S(r!1,Y~P)   kact
+  # Activated STAT dissociates
+  Srelease:   R(s!1).S(r!1,Y~P) -> R(s) + S(r,Y~P)             kdiss
+  # Phosphatase deactivates free monomeric pSTAT
+  Sdephos:    S(r,d,g,Y~P) -> S(r,d,g,Y~0)                     kdephos
+  # Free pSTAT dimerizes
+  Sdimer:     S(r,Y~P,d) + S(r,Y~P,d) <-> S(r,Y~P,d!1).S(r,Y~P,d!1)   kdim, kundim
+  # pSTAT binds the SOCS promoter
+  Gbind:      S(d!+,g) + G(s) <-> S(d!+,g!1).G(s!1)            kGon, kGoff
+  # Bound promoter is transcribed
+  Transcribe: G(s!+) -> G(s!+) + mSOCS()                       ktx
+  # mRNA degradation
+  mRNAdeg:    mSOCS() -> 0                                     kmdeg
+  # Translation
+  Translate:  mSOCS() -> mSOCS() + SOCS(r)                     ktl
+  # Ser727 is phosphorylated and dephosphorylated in any context
+  Sser:       S(S727~0) <-> S(S727~P)                          kser, kserdephos
+  # Free SOCS degradation
+  SOCSdeg:    SOCS(r) -> 0                                     kSOCSdeg
+  # SOCS binds a ligand-bound receptor
+  SOCSbind:   R(l!+,socs) + SOCS(r) -> R(l!+,socs!1).SOCS(r!1)   kSOCSon
+  # SOCS unbinds
+  SOCSunbind: R(socs!1).SOCS(r!1) -> R(socs) + SOCS(r)           kSOCSoff
+end reaction rules
+end model
+generate_network({overwrite=>1})
+simulate({method=>"ode",t_end=>120,n_steps=>240})

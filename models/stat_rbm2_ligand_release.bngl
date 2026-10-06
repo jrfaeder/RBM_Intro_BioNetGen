@@ -1,0 +1,78 @@
+# Cytokine-STAT-SOCS signaling, rule-based version 2 of 6
+# Relaxation 1: ligand can dissociate from any receptor complex.
+# STAT/SOCS binding and STAT activation still require bound ligand; their unbinding does not.
+# Units are illustrative: concentrations in uM, time in minutes.
+
+begin model
+begin parameters
+  L0         10     # ligand (uM)
+  R0         1      # receptor chains (uM)
+  S0         10     # STAT (uM)
+  G0         1      # SOCS gene promoter (uM)
+  kon        1      # ligand binding (1/uM/min)
+  koff       0.1    # ligand unbinding (1/min)
+  kSon       1      # STAT binding (1/uM/min)
+  kSoff      1      # STAT unbinding (1/min)
+  kact       1      # STAT activation (1/min)
+  kdiss      1      # pSTAT release (1/min)
+  kdephos    0.1    # pSTAT dephosphorylation (1/min)
+  kGon       1      # pSTAT-promoter binding (1/uM/min)
+  kGoff      1      # pSTAT-promoter unbinding (1/min)
+  ktx        1      # transcription (1/min)
+  kmdeg      0.1    # mRNA degradation (1/min)
+  ktl        0.1    # translation (1/min)
+  kSOCSdeg   0.05   # SOCS degradation (1/min)
+  kSOCSon    1      # SOCS-receptor binding (1/uM/min)
+  kSOCSoff   0.01   # SOCS-receptor unbinding (1/min)
+end parameters
+begin molecule types
+  L(r)                       # ligand with one receptor-binding site
+  R(l,s)                     # receptor chain: ligand site l, docking site s (shared by STAT and SOCS)
+  S(r,Y~0~P,g)               # STAT: receptor site r, tyrosine Y (unphosphorylated/phosphorylated), DNA site g
+  G(s)                       # SOCS gene promoter with a STAT-binding site
+  mSOCS()                    # SOCS mRNA (no internal structure)
+  SOCS(r)                    # SOCS protein with a receptor-binding site
+end molecule types
+begin seed species
+  L(r)          L0
+  R(l,s)        R0
+  S(r,Y~0,g)    S0
+  G(s)          G0
+end seed species
+begin observables
+  Molecules pSTAT  S(Y~P)
+  Molecules LRtot  L(r!1).R(l!1)
+  Molecules mSOCS  mSOCS()
+  Molecules SOCS   SOCS()
+end observables
+begin reaction rules
+  # Ligand binds a free receptor
+  LRbind:     L(r) + R(l) <-> L(r!1).R(l!1)                    kon, koff
+  # STAT docks on a ligand-bound receptor
+  Sbind:      R(l!+,s) + S(r,Y~0) -> R(l!+,s!1).S(r!1,Y~0)     kSon
+  # Unphosphorylated STAT undocks
+  Sunbind:    R(s!1).S(r!1,Y~0) -> R(s) + S(r,Y~0)             kSoff
+  # Receptor-associated kinase activates docked STAT
+  Sact:       R(l!+,s!1).S(r!1,Y~0) -> R(l!+,s!1).S(r!1,Y~P)   kact
+  # Activated STAT dissociates
+  Srelease:   R(s!1).S(r!1,Y~P) -> R(s) + S(r,Y~P)             kdiss
+  # Phosphatase deactivates free monomeric pSTAT
+  Sdephos:    S(r,g,Y~P) -> S(r,g,Y~0)                         kdephos
+  # pSTAT binds the SOCS promoter
+  Gbind:      S(r,Y~P,g) + G(s) <-> S(r,Y~P,g!1).G(s!1)        kGon, kGoff
+  # Bound promoter is transcribed
+  Transcribe: G(s!+) -> G(s!+) + mSOCS()                       ktx
+  # mRNA degradation
+  mRNAdeg:    mSOCS() -> 0                                     kmdeg
+  # Translation
+  Translate:  mSOCS() -> mSOCS() + SOCS(r)                     ktl
+  # Free SOCS degradation
+  SOCSdeg:    SOCS(r) -> 0                                     kSOCSdeg
+  # SOCS binds a ligand-bound receptor
+  SOCSbind:   R(l!+,s) + SOCS(r) -> R(l!+,s!1).SOCS(r!1)       kSOCSon
+  # SOCS unbinds
+  SOCSunbind: R(s!1).SOCS(r!1) -> R(s) + SOCS(r)               kSOCSoff
+end reaction rules
+end model
+generate_network({overwrite=>1})
+simulate({method=>"ode",t_end=>120,n_steps=>240})

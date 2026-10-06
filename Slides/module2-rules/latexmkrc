@@ -1,0 +1,4 @@
+# Find the shared theme in ../theme. Build with:  latexmk module2-rules.tex
+ensure_path('TEXINPUTS', '../theme//');
+$pdf_mode = 1;
+$out_dir = 'build';
