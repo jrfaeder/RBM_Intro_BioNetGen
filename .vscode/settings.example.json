@@ -1,0 +1,5 @@
+{
+    // BioNetGen extension: results go to <result_folder>/<model>/<timestamp>/.
+    // Must be an absolute path (the extension does not expand ${workspaceFolder}).
+    "bngl.general.result_folder": "/ABSOLUTE/PATH/TO/RBM_Intro_BioNetGen/BNG-results"
+}
