@@ -1,0 +1,67 @@
+% Pathway cartoon for the cytokine-STAT-SOCS example.
+%   \roadmap{k}      highlight step k, fade later steps
+%   \roadmap{99}     show every step normally
+% Optional first argument is passed to tikzpicture, e.g. \roadmap[scale=0.8]{3}.
+\tikzset{
+  fsactive/.style={draw=fsAccent,line width=1.4pt,text=fsAccent},
+  fsfuture/.style={opacity=0.13},
+  stt/.code={\ifnum#1=\curstep\relax\pgfkeysalso{text=fsAccent}\else
+             \ifnum#1>\curstep\relax\pgfkeysalso{fsfuture}\fi\fi},
+  st/.code={\ifnum#1=\curstep\relax\pgfkeysalso{fsactive}\else
+            \ifnum#1>\curstep\relax\pgfkeysalso{fsfuture}\fi\fi},
+  badge/.code={\pgfkeysalso{circle,inner sep=0.6pt,minimum size=3.4mm,
+                 font=\tiny\bfseries,text=white,fill=fsNavy}%
+               \ifnum#1=\curstep\relax\pgfkeysalso{fill=fsAccent}\else
+               \ifnum#1>\curstep\relax\pgfkeysalso{opacity=0.13}\fi\fi},
+  arr/.style={-{Stealth[length=2mm]},line width=0.9pt,fsGray},
+  mol/.style={draw=black!50,line width=0.5pt,font=\scriptsize\bfseries},
+}
+\newcommand{\curstep}{99}
+\newcommand{\roadmap}[2][]{%
+\renewcommand{\curstep}{#2}%
+\begin{tikzpicture}[#1,x=1cm,y=1cm]
+  % compartments
+  \fill[fsGold!22] (0,4.3) rectangle (8,4.7);
+  \draw[fsGold!70!black,line width=0.4pt] (0,4.3) -- (8,4.3) (0,4.7) -- (8,4.7);
+  \node[anchor=north west,font=\tiny,text=fsGray] at (6.4,6.2) {extracellular};
+  \node[anchor=north west,font=\tiny,text=fsGray] at (6.4,4.2) {cytoplasm};
+  \draw[fsGray,dashed,rounded corners=6pt,fill=fsLight] (4.2,0.1) rectangle (7.9,2.4);
+  \node[anchor=north east,font=\tiny,text=fsGray] at (7.85,2.35) {nucleus};
+  % receptor
+  \node[mol,fill=fsNavy!25,rounded corners=2pt,minimum width=5mm,minimum height=17mm]
+    (R) at (1.6,4.5) {R};
+  % step 1: ligand binding
+  \node[mol,st=1,circle,fill=fsGold,minimum size=5mm,inner sep=0] (L) at (1.6,5.75) {L};
+  \node[badge=1] at (2.2,5.85) {1};
+  % step 2: STAT recruitment to the ligand-bound receptor
+  \node[mol,fill=fsGreen!30,ellipse,minimum width=8mm,minimum height=5mm] (S) at (3.4,3.0) {S};
+  \node[mol,st=2,fill=fsGreen!30,ellipse,minimum width=8mm,minimum height=5mm] (Sd) at (1.6,3.3) {S};
+  \draw[arr,st=2] (S.west) -- (Sd.east);
+  \node[badge=2] at (2.55,3.42) {2};
+  % step 3: activation (phosphorylation) of docked STAT
+  \node[st=3,circle,fill=fsAccent,text=white,font=\tiny\bfseries,inner sep=0.5pt,
+        minimum size=3mm] (P1) at (1.15,3.05) {P};
+  \node[badge=3] at (0.65,3.3) {3};
+  % step 4: release of pSTAT; dephosphorylation
+  \node[mol,st=4,fill=fsGreen!30,ellipse,minimum width=8mm,minimum height=5mm] (Sp) at (3.0,1.5) {S};
+  \node[st=4,circle,fill=fsAccent,text=white,font=\tiny\bfseries,inner sep=0.5pt,
+        minimum size=3mm] at ($(Sp.north east)+(-0.05,-0.05)$) {P};
+  \draw[arr,st=4] (Sd.south) to[bend right=20] (Sp.west);
+  \draw[arr,st=4,dashed] (Sp.north) to[bend right=25] (S.south);
+  \node[text=fsGray,stt=4,font=\tiny,anchor=west] at (2.1,2.42) {phosphatase};
+  \node[badge=4] at (1.8,1.95) {4};
+  % step 5: pSTAT binds promoter, SOCS transcription and translation
+  \draw[black!60,line width=1.2pt] (4.5,0.6) -- (7.6,0.6);
+  \fill[fsNavy!50] (4.7,0.48) rectangle (5.7,0.72);
+  \node[font=\tiny,text=fsGray,anchor=north] at (5.2,0.45) {SOCS gene};
+  \node[mol,st=5,fill=fsGreen!30,ellipse,minimum width=8mm,minimum height=5mm] (Sg) at (5.2,1.05) {S};
+  \draw[arr,st=5] (Sp.east) to[bend right=15] (Sg.west);
+  \draw[st=5,fsTeal,line width=1pt,decorate,decoration={snake,amplitude=0.6mm,segment length=2mm}]
+     (5.9,1.0) -- (7.0,1.6) node[right,font=\tiny,text=fsTeal]{mRNA};
+  \node[mol,st=5,fill=fsAccent!20,rounded corners=2pt] (SOCS) at (5.6,3.3) {SOCS};
+  \draw[arr,st=5] (6.9,1.8) to[bend right=20] (SOCS.east);
+  \node[badge=5] at (6.25,1.0) {5};
+  % step 6: SOCS feedback on the receptor
+  \draw[st=6,fsAccent,line width=1.1pt,-{Bar[width=3mm]}] (SOCS.west) to[bend right=12] (1.95,3.85);
+  \node[badge=6] at (4.2,3.85) {6};
+\end{tikzpicture}}

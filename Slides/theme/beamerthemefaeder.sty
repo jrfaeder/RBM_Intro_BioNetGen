@@ -1,0 +1,183 @@
+% beamerthemefaeder.sty -- a clean, portable beamer theme.
+%
+% Usage:
+%   \documentclass[aspectratio=169,11pt]{beamer}
+%   \usetheme{faeder}
+%
+% Portability: builds with pdflatex on any standard TeX Live / MacTeX / MiKTeX
+% install. Uses Source Sans Pro if present and falls back to Helvetica.
+% Put this file next to the .tex, or on TEXINPUTS (see latexmkrc).
+%
+% Extras provided:
+%   \takeaway{text}        boxed key message at the bottom of a frame
+%   \source{text}          small citation line in the lower-left corner
+%   \hl{text}              accent-colored emphasis
+%   \code{text}            inline monospace
+%   bngl listings language  \begin{lstlisting}[language=bngl] ... \end{lstlisting}
+%                           \lstinputlisting[language=bngl]{file.bngl}
+
+\mode<presentation>
+
+\RequirePackage[T1]{fontenc}
+\RequirePackage{lmodern}
+\IfFileExists{sourcesanspro.sty}
+  {\RequirePackage[default,semibold]{sourcesanspro}}
+  {\RequirePackage[scaled=0.92]{helvet}}
+\IfFileExists{inconsolata.sty}{\RequirePackage[scaled=0.95]{inconsolata}}{}
+\RequirePackage{xcolor}
+\RequirePackage{tikz}
+\RequirePackage{listings}
+\RequirePackage{amsmath}
+\RequirePackage{booktabs}
+\usetikzlibrary{arrows.meta,positioning,calc,shapes.geometric,decorations.pathmorphing,backgrounds,fit}
+
+% ---------------------------------------------------------------- colors
+\definecolor{fsNavy}{HTML}{1B365D}
+\definecolor{fsAccent}{HTML}{C8102E}
+\definecolor{fsGold}{HTML}{D39B1E}
+\definecolor{fsTeal}{HTML}{1F7A8C}
+\definecolor{fsGreen}{HTML}{3A7D44}
+\definecolor{fsGray}{HTML}{5B6770}
+\definecolor{fsLight}{HTML}{EEF2F6}
+\definecolor{fsCode}{HTML}{F6F8FA}
+
+\setbeamercolor{normal text}{fg=black!88,bg=white}
+\setbeamercolor{structure}{fg=fsNavy}
+\setbeamercolor{alerted text}{fg=fsAccent}
+\setbeamercolor{frametitle}{fg=fsNavy}
+\setbeamercolor{title}{fg=white}
+\setbeamercolor{subtitle}{fg=white!85!fsNavy}
+\setbeamercolor{author}{fg=white}
+\setbeamercolor{institute}{fg=white!80!fsNavy}
+\setbeamercolor{date}{fg=white!80!fsNavy}
+\setbeamercolor{footline}{fg=fsGray}
+\setbeamercolor{block title}{fg=white,bg=fsNavy}
+\setbeamercolor{block body}{fg=black!88,bg=fsLight}
+\setbeamercolor{block title example}{fg=white,bg=fsTeal}
+\setbeamercolor{block body example}{fg=black!88,bg=fsTeal!8}
+\setbeamercolor{block title alerted}{fg=white,bg=fsAccent}
+\setbeamercolor{block body alerted}{fg=black!88,bg=fsAccent!7}
+\setbeamercolor{itemize item}{fg=fsAccent}
+\setbeamercolor{itemize subitem}{fg=fsGray}
+\setbeamercolor{enumerate item}{fg=fsNavy}
+
+% ---------------------------------------------------------------- fonts
+\setbeamerfont{frametitle}{size=\Large,series=\bfseries}
+\setbeamerfont{title}{size=\huge,series=\bfseries}
+\setbeamerfont{subtitle}{size=\large}
+\setbeamerfont{author}{size=\large}
+\setbeamerfont{footline}{size=\scriptsize}
+\setbeamerfont{block title}{series=\bfseries}
+
+% ---------------------------------------------------------------- layout
+\setbeamertemplate{navigation symbols}{}
+\setbeamersize{text margin left=8mm,text margin right=8mm}
+\setbeamertemplate{itemize items}{\raisebox{0.15ex}{\small$\blacktriangleright$}}
+\setbeamertemplate{itemize subitem}{\textendash}
+\setbeamertemplate{enumerate items}[default]
+\setbeamertemplate{blocks}[rounded]
+\setbeamertemplate{caption}{\insertcaption}
+
+\setbeamertemplate{frametitle}{%
+  \vskip3mm%
+  \usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}\insertframetitle\par%
+  \setbox\z@\hbox{\insertframesubtitle}%
+  \ifdim\wd\z@>\z@
+    {\vskip1mm\normalsize\color{fsGray}\insertframesubtitle\par}%
+  \fi
+  \vskip2mm\nointerlineskip
+  \hbox{\color{fsGold}\vrule width18mm height1.2pt}%
+  \vskip2.5mm%
+}
+
+\setbeamertemplate{footline}{%
+  \usebeamerfont{footline}\usebeamercolor[fg]{footline}%
+  \hbox to \paperwidth{%
+    \hskip8mm\insertshorttitle\hfill
+    \ifnum\insertframenumber>1 \insertframenumber\fi\hskip8mm}%
+  \vskip3mm%
+}
+
+\setbeamertemplate{title page}{%
+  \begin{tikzpicture}[remember picture,overlay]
+    \fill[fsNavy] (current page.south west) rectangle (current page.north east);
+    \fill[fsGold] ([yshift=-0.62\paperheight]current page.north west)
+      rectangle ++(\paperwidth,1.2pt);
+    \node[anchor=south west,text width=0.82\paperwidth,align=left,inner sep=0]
+      at ([xshift=12mm,yshift=-0.58\paperheight]current page.north west)
+      {{\usebeamerfont{title}\usebeamercolor[fg]{title}\inserttitle\par}%
+       \setbox\z@\hbox{\insertsubtitle}%
+       \ifdim\wd\z@>\z@
+         \vskip3mm{\usebeamerfont{subtitle}\usebeamercolor[fg]{subtitle}\insertsubtitle\par}%
+       \fi};
+    \node[anchor=north west,text width=0.82\paperwidth,align=left,inner sep=0]
+      at ([xshift=12mm,yshift=-0.67\paperheight]current page.north west)
+      {{\usebeamerfont{author}\usebeamercolor[fg]{author}\insertauthor\par}%
+       \vskip1.5mm{\usebeamercolor[fg]{institute}\insertinstitute\par}%
+       \vskip1.5mm{\usebeamercolor[fg]{date}\insertdate\par}};
+  \end{tikzpicture}%
+}
+
+% Section divider slide inserted automatically at each \section.
+\newif\iffs@sectionpages \fs@sectionpagestrue
+\DeclareOptionBeamer{nosectionpages}{\fs@sectionpagesfalse}
+\ProcessOptionsBeamer
+\iffs@sectionpages
+\AtBeginSection{%
+  {\setbeamertemplate{footline}{}%
+   \begin{frame}[plain,noframenumbering]
+     \begin{tikzpicture}[remember picture,overlay]
+       \fill[fsLight] (current page.south west) rectangle (current page.north east);
+       \fill[fsNavy] (current page.north west) rectangle ([xshift=6mm]current page.south west);
+       \node[anchor=west,text width=0.8\paperwidth,align=left]
+         at ([xshift=18mm]current page.west)
+         {{\color{fsGold}\bfseries\large Part \thesection}\par\vskip2mm
+          {\color{fsNavy}\bfseries\Huge\insertsectionhead}};
+     \end{tikzpicture}
+   \end{frame}}%
+}
+\fi
+
+% ---------------------------------------------------------------- helpers
+\newcommand{\hl}[1]{{\color{fsAccent}\bfseries #1}}
+\newcommand{\code}[1]{{\ttfamily\small #1}}
+\newcommand{\source}[1]{%
+  \begin{tikzpicture}[remember picture,overlay]
+    \node[anchor=south west,font=\tiny,text=fsGray,inner sep=0]
+      at ([xshift=8mm,yshift=10.5mm]current page.south west) {#1};
+  \end{tikzpicture}}
+\newcommand{\takeaway}[1]{%
+  \par\vfill
+  \begin{tikzpicture}
+    \node[fill=fsNavy,text=white,rounded corners=2pt,inner sep=2.2mm,
+          text width=\dimexpr\linewidth-4.4mm\relax,font=\small\bfseries] {#1};
+  \end{tikzpicture}\par\vskip1mm}
+
+% ---------------------------------------------------------------- listings
+\lstdefinelanguage{bngl}{
+  morekeywords=[1]{begin,end,model,parameters,molecule,types,species,seed,
+    observables,reaction,rules,functions,compartments},
+  morekeywords=[2]{Molecules,Species},
+  morekeywords=[3]{generate_network,simulate,setParameter,resetConcentrations,
+    saveConcentrations,parameter_scan,writeSBML,writeXML},
+  sensitive=true,
+  morecomment=[l]{\#},
+  morestring=[b]",
+}
+\lstdefinestyle{fsbase}{
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=[1]\color{fsNavy}\bfseries,
+  keywordstyle=[2]\color{fsTeal}\bfseries,
+  keywordstyle=[3]\color{fsAccent}\bfseries,
+  commentstyle=\color{fsGray}\itshape,
+  stringstyle=\color{fsGreen},
+  backgroundcolor=\color{fsCode},
+  frame=single,framerule=0pt,rulecolor=\color{fsCode},
+  xleftmargin=1.5mm,xrightmargin=1.5mm,framexleftmargin=1.5mm,framexrightmargin=1.5mm,
+  aboveskip=1.5mm,belowskip=1.5mm,
+  columns=fullflexible,keepspaces=true,showstringspaces=false,
+  upquote=true,breaklines=true,tabsize=2,
+}
+\lstset{style=fsbase}
+
+\mode<all>

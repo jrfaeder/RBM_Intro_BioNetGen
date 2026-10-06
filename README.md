@@ -2,9 +2,9 @@ Slides and material introducing rule-based modeling with BioNetGen and Python. U
 
 ## Layout
 
-- `models/` — BNGL model files
+- `models/` — BNGL model files. `stat_step1_binding.bngl` … `stat_step6_feedback.bngl` build the Module 1 cytokine–STAT–SOCS model one reaction step at a time.
 - `notebooks/` — Jupyter notebooks, plus the data file used for fitting (`mm.csv`) and SBML exports. Notebooks load models from `../models/`, so run them from inside `notebooks/`.
-- `Slides/` — lecture slides
+- `Slides/` — lecture slides. `Slides/theme/` holds the shared beamer theme; each module (e.g. `Slides/module1-kinetics/`) has its own folder. The 2025 PowerPoint deck is kept for reference.
 - `BNG-results/` — output from running models with the BioNetGen VS Code extension (see Setup below; not tracked in git)
 
 ## Setup
@@ -24,3 +24,14 @@ To have the BioNetGen VS Code extension write simulation results to `BNG-results
 3. Open this folder as the workspace in VS Code (**File > Open Folder**). Each model run will then be saved to `BNG-results/<model>/<timestamp>/`.
 
 Your `.vscode/settings.json` is ignored by git, so your path stays local. If you skip this step, the extension writes results to the top level of the workspace instead.
+
+## Building the slides
+
+The slides are beamer (pdflatex) and need a standard TeX Live, MacTeX, or MiKTeX install.
+
+```
+cd Slides/module1-kinetics
+latexmk module1-kinetics.tex      # PDF is written to build/
+```
+
+The plots are drawn from simulation output in `data/`. To regenerate it after changing a model, run `./make_data.sh` (requires `bionetgen` on your PATH).

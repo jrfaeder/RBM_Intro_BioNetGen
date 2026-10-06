@@ -1,0 +1,4 @@
+# Find the shared theme in ../theme. Build with:  latexmk module1-kinetics.tex
+ensure_path('TEXINPUTS', '../theme//');
+$pdf_mode = 1;
+$out_dir = 'build';

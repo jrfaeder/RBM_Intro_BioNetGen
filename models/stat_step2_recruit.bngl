@@ -1,0 +1,50 @@
+# Cytokine-STAT-SOCS signaling: Step 2: STAT binds the ligand-bound receptor
+# Cumulative model: includes steps 1-2. Lines marked '# new' were added in this step.
+# Species have no internal structure here; molecule structure is introduced in Module 2.
+# Units are illustrative: concentrations in uM, time in minutes.
+
+begin model
+
+begin parameters
+  L0        10     # ligand (uM)
+  R0        1      # receptor (uM)
+  kon       1      # binding (1/uM/min)
+  koff      0.1    # unbinding (1/min)
+  S0        10     # new: STAT (uM)
+  kSon      1      # new: STAT binding (1/uM/min)
+  kSoff     1      # new: STAT unbinding (1/min)
+end parameters
+
+begin molecule types
+  L
+  R
+  LR
+  S  # new
+  LRS  # new
+end molecule types
+
+begin species
+  L    L0
+  R    R0
+  S    S0  # new
+end species
+
+begin observables
+  Molecules Lfree   L
+  Molecules Rfree   R
+  Molecules LR      LR
+  Molecules Sfree   S  # new
+  Molecules LRS     LRS  # new
+end observables
+
+begin reaction rules
+  # Ligand binds receptor
+  LRbind: L + R <-> LR kon, koff
+  # STAT binds ligand-bound receptor (new)
+  Sbind: LR + S <-> LRS kSon, kSoff
+end reaction rules
+
+end model
+
+generate_network({overwrite=>1})
+simulate({method=>"ode",t_end=>30,n_steps=>300})

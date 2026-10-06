@@ -1,0 +1,56 @@
+# Cytokine-STAT-SOCS signaling: Step 3: receptor-bound STAT is activated (phosphorylated)
+# Cumulative model: includes steps 1-3. Lines marked '# new' were added in this step.
+# Species have no internal structure here; molecule structure is introduced in Module 2.
+# Units are illustrative: concentrations in uM, time in minutes.
+
+begin model
+
+begin parameters
+  L0        10     # ligand (uM)
+  R0        1      # receptor (uM)
+  kon       1      # binding (1/uM/min)
+  koff      0.1    # unbinding (1/min)
+  S0        10     # STAT (uM)
+  kSon      1      # STAT binding (1/uM/min)
+  kSoff     1      # STAT unbinding (1/min)
+  kact      1      # new: STAT activation (1/min)
+end parameters
+
+begin molecule types
+  L
+  R
+  LR
+  S
+  LRS
+  LRSp  # new
+end molecule types
+
+begin species
+  L    L0
+  R    R0
+  S    S0
+end species
+
+begin observables
+  Molecules Lfree   L
+  Molecules Rfree   R
+  Molecules LR      LR
+  Molecules Sfree   S
+  Molecules LRS     LRS
+  Molecules LRSp    LRSp  # new
+  Molecules pSTAT   LRSp  # new
+end observables
+
+begin reaction rules
+  # Ligand binds receptor
+  LRbind: L + R <-> LR kon, koff
+  # STAT binds ligand-bound receptor
+  Sbind: LR + S <-> LRS kSon, kSoff
+  # Receptor-associated kinase activates STAT (new)
+  Sact: LRS -> LRSp kact
+end reaction rules
+
+end model
+
+generate_network({overwrite=>1})
+simulate({method=>"ode",t_end=>30,n_steps=>300})

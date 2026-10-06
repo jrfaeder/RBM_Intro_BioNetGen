@@ -5,3 +5,5 @@ lr_sbml.xml
 mapk3_inh_sbml.xml
 mapk3_sbml.xml
 /~$MSCBIO2025-BioNetGenOverview.pptx
+/Slides/*/build/
+/Slides/*/build.log

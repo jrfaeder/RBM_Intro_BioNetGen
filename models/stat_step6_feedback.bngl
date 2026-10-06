@@ -1,0 +1,98 @@
+# Cytokine-STAT-SOCS signaling: Step 6: SOCS binds the receptor and blocks STAT recruitment (negative feedback)
+# Cumulative model: includes steps 1-6. Lines marked '# new' were added in this step.
+# Species have no internal structure here; molecule structure is introduced in Module 2.
+# Units are illustrative: concentrations in uM, time in minutes.
+
+begin model
+
+begin parameters
+  L0        10     # ligand (uM)
+  R0        1      # receptor (uM)
+  kon       1      # binding (1/uM/min)
+  koff      0.1    # unbinding (1/min)
+  S0        10     # STAT (uM)
+  kSon      1      # STAT binding (1/uM/min)
+  kSoff     1      # STAT unbinding (1/min)
+  kact      1      # STAT activation (1/min)
+  kdiss     1      # pSTAT release (1/min)
+  kdephos   0.1    # pSTAT dephosphorylation (1/min)
+  G0        1      # SOCS gene promoter (uM)
+  kGon      1      # pSTAT-promoter binding (1/uM/min)
+  kGoff     1      # pSTAT-promoter unbinding (1/min)
+  ktx       1      # transcription (1/min)
+  kmdeg     0.1    # mRNA degradation (1/min)
+  ktl       0.1    # translation (1/min)
+  kSOCSdeg  0.05   # SOCS degradation (1/min)
+  kSOCSon   1      # new: SOCS-receptor binding (1/uM/min)
+  kSOCSoff  0.01   # new: SOCS-receptor unbinding (1/min)
+end parameters
+
+begin molecule types
+  L
+  R
+  LR
+  S
+  LRS
+  LRSp
+  Sp
+  G
+  GSp
+  mSOCS
+  SOCS
+  LRSOCS  # new
+end molecule types
+
+begin species
+  L    L0
+  R    R0
+  S    S0
+  G    G0
+end species
+
+begin observables
+  Molecules Lfree   L
+  Molecules Rfree   R
+  Molecules LR      LR
+  Molecules Sfree   S
+  Molecules LRS     LRS
+  Molecules LRSp    LRSp
+  Molecules Sp      Sp
+  Molecules mSOCS   mSOCS
+  Molecules SOCS    SOCS
+  Molecules LRSOCS  LRSOCS  # new
+  Molecules pSTAT   LRSp Sp GSp  # new
+end observables
+
+begin reaction rules
+  # Ligand binds receptor
+  LRbind: L + R <-> LR kon, koff
+  # STAT binds ligand-bound receptor
+  Sbind: LR + S <-> LRS kSon, kSoff
+  # Receptor-associated kinase activates STAT
+  Sact: LRS -> LRSp kact
+  # Activated STAT dissociates
+  Srelease: LRSp -> LR + Sp kdiss
+  # Phosphatase deactivates free STAT
+  Sdephos: Sp -> S kdephos
+  # pSTAT binds the SOCS promoter
+  Gbind: Sp + G <-> GSp kGon, kGoff
+  # Bound promoter is transcribed
+  Transcribe: GSp -> GSp + mSOCS ktx
+  # mRNA degradation
+  mRNAdeg: mSOCS -> 0 kmdeg
+  # Translation
+  Translate: mSOCS -> mSOCS + SOCS ktl
+  # SOCS protein degradation
+  SOCSdeg: SOCS -> 0 kSOCSdeg
+  # SOCS binds ligand-bound receptor, blocking STAT binding (new)
+  SOCSbind: LR + SOCS <-> LRSOCS kSOCSon, kSOCSoff
+end reaction rules
+
+end model
+
+generate_network({overwrite=>1})
+simulate({method=>"ode",t_end=>120,n_steps=>240,suffix=>"feedback"})
+# Compare: same model with the feedback step switched off
+resetConcentrations()
+setParameter("kSOCSon",0)
+simulate({method=>"ode",t_end=>120,n_steps=>240,suffix=>"no_feedback"})
