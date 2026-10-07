@@ -4,6 +4,7 @@
 \usepackage{pgfplots}
 \pgfplotsset{compat=1.18}
 \usepackage{hyperref}
+\usepackage{qrcode}
 \hypersetup{colorlinks=true,urlcolor=fsTeal,linkcolor=fsNavy}
 
 \input{roadmap.tex}
@@ -39,19 +40,7 @@
   \titlepage
 \end{frame}
 
-\begin{frame}{Resources}
-  \begin{itemize}
-    \item BioNetGen software and documentation: \href{https://bionetgen.org}{bionetgen.org}
-    \item VS Code extension: search the Extensions panel for \emph{BioNetGen}
-    \item Python library: \code{pip install bionetgen} (PyBioNetGen), with
-          \href{https://libroadrunner.org}{libRoadRunner} for simulation
-    \item Course materials (models, notebooks, slides): \code{RBM\_Intro\_BioNetGen}
-      \begin{itemize}
-        \item \code{models/} \quad BNGL model files used in these slides
-        \item \code{notebooks/} \quad Jupyter notebooks for simulation and fitting
-      \end{itemize}
-  \end{itemize}
-\end{frame}
+\input{../shared/resources}
 
 \begin{frame}{Goals for this module}
   By the end of this module you should be able to
