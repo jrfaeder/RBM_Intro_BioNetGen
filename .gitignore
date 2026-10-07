@@ -7,4 +7,5 @@ mapk3_sbml.xml
 /~$MSCBIO2025-BioNetGenOverview.pptx
 /Slides/*/build/
 /Slides/*/build.log
-/Worksheet_and_quiz_examples/.DS_Store
+/Worksheet_and_quiz_examples/
+.DS_Store
