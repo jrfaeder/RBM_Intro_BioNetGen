@@ -1,9 +1,9 @@
-Slides and material introducing rule-based modeling with BioNetGen and Python. Uses the VS Code extension for BioNetGen and the PyBioNetGen library with libRoadRunner for simulations. The [fit_data.ipynb](notebooks/fit_data.ipynb) notebook shows how to set up estimation of model parameters from data using the [PyPesto](https://github.com/icb-dcm/pypesto) package.
+Slides and material introducing rule-based modeling with BioNetGen and Python. Uses the VS Code extension for BioNetGen, and the [bngsim](https://bngsim.readthedocs.io) library for ODE and stochastic simulation from Python. The [fit_data.ipynb](notebooks/fit_data.ipynb) notebook shows how to set up estimation of model parameters from data using the [PyPesto](https://github.com/icb-dcm/pypesto) package.
 
 ## Layout
 
 - `models/` — BNGL model files. `stat_step1_binding.bngl` … `stat_step6_feedback.bngl` build the Module 1 cytokine–STAT–SOCS model one reaction step at a time. `stat_rbm1_rules.bngl` … `stat_rbm6_ser727.bngl` are the Module 2 rule-based versions: the same model written with structured molecules, then extended one assumption at a time.
-- `notebooks/` — Jupyter notebooks, plus the data file used for fitting (`mm.csv`) and SBML exports. Notebooks load models from `../models/`, so run them from inside `notebooks/`.
+- `notebooks/` — Jupyter notebooks (simulation with bngsim, parameter fitting with pyPESTO), plus the data file used for fitting (`mm.csv`) and SBML exports. Notebooks load models from `../models/`, so run them from inside `notebooks/`.
 - `Slides/` — lecture slides. `Slides/theme/` holds the shared beamer theme; each module (`Slides/module1-kinetics/`, `Slides/module2-rules/`) has its own folder, and built PDFs are in `Slides/pdf/`. The 2025 PowerPoint deck is kept for reference.
 - `BNG-results/` — output from running models with the BioNetGen VS Code extension (see Setup below; not tracked in git)
 
@@ -24,6 +24,16 @@ To have the BioNetGen VS Code extension write simulation results to `BNG-results
 3. Open this folder as the workspace in VS Code (**File > Open Folder**). Each model run will then be saved to `BNG-results/<model>/<timestamp>/`.
 
 Your `.vscode/settings.json` is ignored by git, so your path stays local. If you skip this step, the extension writes results to the top level of the workspace instead.
+
+## Python setup
+
+The notebooks need `bngsim`, `bionetgen` (PyBioNetGen, which supplies the BioNetGen engine bngsim uses to turn a `.bngl` file into a network), `pypesto` (for `fit_data.ipynb`), and `numpy`, `pandas`, `matplotlib`:
+
+```
+pip install bngsim bionetgen pypesto numpy pandas matplotlib
+```
+
+BioNetGen is a Perl program, so `perl` must also be available (it is on macOS and Linux).
 
 ## Building the slides
 
