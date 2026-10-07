@@ -4,7 +4,7 @@ Slides and material introducing rule-based modeling with BioNetGen and Python. U
 
 - `models/` — BNGL model files. `stat_step1_binding.bngl` … `stat_step6_feedback.bngl` build the Module 1 cytokine–STAT–SOCS model one reaction step at a time. `stat_rbm1_rules.bngl` … `stat_rbm6_ser727.bngl` are the Module 2 rule-based versions: the same model written with structured molecules, then extended one assumption at a time.
 - `notebooks/` — Jupyter notebooks, plus the data file used for fitting (`mm.csv`) and SBML exports. Notebooks load models from `../models/`, so run them from inside `notebooks/`.
-- `Slides/` — lecture slides. `Slides/theme/` holds the shared beamer theme; each module (`Slides/module1-kinetics/`, `Slides/module2-rules/`) has its own folder. The 2025 PowerPoint deck is kept for reference.
+- `Slides/` — lecture slides. `Slides/theme/` holds the shared beamer theme; each module (`Slides/module1-kinetics/`, `Slides/module2-rules/`) has its own folder, and built PDFs are in `Slides/pdf/`. The 2025 PowerPoint deck is kept for reference.
 - `BNG-results/` — output from running models with the BioNetGen VS Code extension (see Setup below; not tracked in git)
 
 ## Setup
@@ -27,11 +27,14 @@ Your `.vscode/settings.json` is ignored by git, so your path stays local. If you
 
 ## Building the slides
 
-The slides are beamer (pdflatex) and need a standard TeX Live, MacTeX, or MiKTeX install.
+Built PDFs are in [Slides/pdf/](Slides/pdf/), so you can download them without building.
+
+To rebuild, you need a standard TeX Live, MacTeX, or MiKTeX install (pdflatex + latexmk):
 
 ```
-cd Slides/module1-kinetics        # or Slides/module2-rules
-latexmk module1-kinetics.tex      # PDF is written to build/
+Slides/build.sh                  # build all modules, copy PDFs to Slides/pdf/
+Slides/build.sh module2-rules    # build one module
+Slides/build.sh --data           # rerun the BioNetGen models first (needs bionetgen on PATH)
 ```
 
-The plots are drawn from simulation output in `data/`. To regenerate it after changing a model, run `./make_data.sh` (requires `bionetgen` on your PATH).
+The plots are drawn from simulation output in each module's `data/` folder, so `--data` is only needed after changing a model.
