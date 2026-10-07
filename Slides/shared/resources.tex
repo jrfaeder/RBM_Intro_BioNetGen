@@ -1,32 +1,31 @@
 % Resources slide shared by all modules:  \input{../shared/resources}
 \newcommand{\courserepo}{https://github.com/jrfaeder/RBM_Intro_BioNetGen}
+\providecommand{\bngplayground}{https://ruleworld.github.io/bngplayground/}
 \begin{frame}{Resources}
   \begin{columns}[T]
     \begin{column}{0.64\textwidth}
       \begin{itemize}
-        \setlength\itemsep{1.5mm}
-        \item \textbf{BioNetGen}: software, documentation, and tutorials:
+        \setlength\itemsep{1.8mm}
+        \item \textbf{BioNetGen} software, documentation, and tutorials:
               \href{https://bionetgen.org}{bionetgen.org}
         \item \textbf{VS Code extension}: search the Extensions panel for
               \emph{BioNetGen}
-        \item \textbf{bngsim}: fast ODE and stochastic simulation of BioNetGen models
-              from Python: \href{https://bngsim.readthedocs.io}{bngsim.readthedocs.io}\\
-              Install with \code{pip install bngsim bionetgen}
-        \item \textbf{Course repository}:
+        \item \textbf{BNG Playground}: write and simulate models in your browser,
+              no installation\\
+              \href{\bngplayground}{ruleworld.github.io/bngplayground}
+        \item \textbf{bngsim}: fast ODE and stochastic simulation from Python\\
+              \href{https://bngsim.readthedocs.io}{bngsim.readthedocs.io}
+              \enspace\textperiodcentered\enspace \code{pip install bngsim bionetgen}
+        \item \textbf{Course repository}: models, notebooks, slides and handouts\\
               \href{\courserepo}{github.com/jrfaeder/RBM\_Intro\_BioNetGen}
-          \begin{itemize}
-            \item \code{models/} \quad BNGL models used in the slides
-            \item \code{notebooks/} \quad Jupyter notebooks for simulation and fitting
-            \item \code{Slides/pdf/} \quad slides and handouts
-          \end{itemize}
       \end{itemize}
     \end{column}
     \begin{column}{0.32\textwidth}
       \centering
-      \vskip2mm
-      \qrcode[height=3.4cm]{\courserepo}\\[2mm]
-      {\small Course repository}\\
-      {\scriptsize\color{fsGray} models, notebooks, slides}
+      \qrcode[height=2.5cm]{\courserepo}\\[1mm]
+      {\small Course repository}\\[4mm]
+      \qrcode[height=2.5cm]{\bngplayground}\\[1mm]
+      {\small BNG Playground}
     \end{column}
   \end{columns}
 \end{frame}

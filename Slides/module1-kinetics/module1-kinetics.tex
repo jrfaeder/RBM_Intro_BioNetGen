@@ -10,6 +10,7 @@
 \input{roadmap.tex}
 
 \graphicspath{{figures/}}
+\newcommand{\bngplayground}{https://ruleworld.github.io/bngplayground/}
 \newcommand{\modeldir}{../../models}
 \newcommand{\conc}[1]{[\mathsf{#1}]}
 
@@ -409,6 +410,27 @@
   \end{columns}
 \end{frame}
 
+\begin{frame}{BNG Playground: BioNetGen in your browser}
+  \begin{columns}[c]
+    \begin{column}{0.6\textwidth}
+      \begin{itemize}[<+->]
+        \setlength\itemsep{2mm}
+        \item Write, simulate, and analyze BNGL models in a web browser:
+              nothing to install
+        \item Interactive examples for learning rule-based modeling
+        \item Share a model as a link
+        \item Useful for trying the course models on any computer:
+              paste a file from \code{models/} and run it
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.36\textwidth}
+      \centering
+      \qrcode[height=3.6cm]{\bngplayground}\\[2mm]
+      \href{\bngplayground}{\small ruleworld.github.io/bngplayground}
+    \end{column}
+  \end{columns}
+\end{frame}
+
 % ======================================================================
 \section{Building the signaling circuit in BNGL}
 
@@ -710,6 +732,10 @@ end reaction rules
     \item Add a reaction that lets SOCS bind \code{LRS} as well as \code{LR}.
           What new species do you need?
   \end{enumerate}
+  \vskip3mm
+  {\small No local setup yet? Paste any of these models into
+  \href{\bngplayground}{BNG Playground} (\code{ruleworld.github.io/bngplayground})
+  and run it in your browser.}
 \end{frame}
 
 \begin{frame}{Summary}
