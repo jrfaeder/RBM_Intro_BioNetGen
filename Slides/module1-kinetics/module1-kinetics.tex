@@ -55,7 +55,7 @@
 
 \begin{frame}{Goals for this module}
   By the end of this module you should be able to
-  \begin{enumerate}
+  \begin{enumerate}[<+->]
     \setlength\itemsep{1.5mm}
     \item describe a biochemical process as a set of \hl{species} and \hl{reactions}
     \item write the rate of each reaction using \hl{mass-action kinetics}
@@ -73,17 +73,19 @@
   \begin{columns}[T]
     \begin{column}{0.55\textwidth}
       A \hl{reaction network model} consists of
-      \begin{itemize}
-        \item \textbf{species}: the molecules or complexes we track
-        \item \textbf{reactions}: how species are converted into one another
-        \item \textbf{rate laws} and \textbf{rate constants}: how fast each reaction occurs
-        \item \textbf{initial conditions}: the amount of each species at $t=0$
+      \begin{itemize}[<1->]
+        \item<1-> \textbf{species}: the molecules or complexes we track
+        \item<2-> \textbf{reactions}: how species are converted into one another
+        \item<3-> \textbf{rate laws} and \textbf{rate constants}: how fast each reaction occurs
+        \item<4-> \textbf{initial conditions}: the amount of each species at $t=0$
       \end{itemize}
       \vskip2mm
+      \onslide<5->
       The same framework describes atmospheric chemistry, epidemics, ecology,
       and the signaling and gene-regulatory networks that control cell behavior.
     \end{column}
     \begin{column}{0.4\textwidth}
+      \onslide<6->
       \begin{block}{What a model gives us}
         \small
         \begin{itemize}
@@ -107,6 +109,7 @@
       Cell fate is decided by many interacting signaling modules: growth-factor
       signaling, the cell cycle, DNA damage, apoptosis.
       \vskip3mm
+      \onslide<2->
       \hl{How do we link these modules together} into models that predict how
       cells respond?
     \end{column}
@@ -127,7 +130,7 @@
   \begin{columns}[c]
     \begin{column}{0.45\textwidth}
       \small
-      \begin{itemize}
+      \begin{itemize}[<+->]
         \setlength\itemsep{1mm}
         \item \textbf{Cytokines} (e.g.\ interleukins, interferons) are secreted
               proteins that coordinate immune responses.
@@ -143,7 +146,10 @@
     \end{column}
     \begin{column}{0.53\textwidth}
       \centering
-      \roadmap[scale=0.95]{99}
+      \only<1-2| handout:0>{\roadmap[scale=0.95]{1}}%
+      \only<3| handout:0>{\roadmap[scale=0.95]{4}}%
+      \only<4| handout:0>{\roadmap[scale=0.95]{5}}%
+      \only<5-| handout:1>{\roadmap[scale=0.95]{99}}%
     \end{column}
   \end{columns}
 \end{frame}
@@ -151,7 +157,7 @@
 \begin{frame}{We will build the model one reaction step at a time}
   \begin{columns}[c]
     \begin{column}{0.45\textwidth}
-      \begin{enumerate}
+      \begin{enumerate}[<+->]
         \setlength\itemsep{1.2mm}
         \item Ligand--receptor binding
         \item STAT binds the ligand-bound receptor
@@ -161,13 +167,20 @@
         \item SOCS binds the receptor and blocks STAT binding
       \end{enumerate}
       \vskip2mm
+      \onslide<7->
       {\small Each step adds reactions to the previous model. The files are
       \code{models/stat\_step1\_binding.bngl} through
       \code{stat\_step6\_feedback.bngl}.}
     \end{column}
     \begin{column}{0.53\textwidth}
       \centering
-      \roadmap[scale=0.95]{99}
+      \only<1| handout:0>{\roadmap[scale=0.95]{1}}%
+      \only<2| handout:0>{\roadmap[scale=0.95]{2}}%
+      \only<3| handout:0>{\roadmap[scale=0.95]{3}}%
+      \only<4| handout:0>{\roadmap[scale=0.95]{4}}%
+      \only<5| handout:0>{\roadmap[scale=0.95]{5}}%
+      \only<6| handout:0>{\roadmap[scale=0.95]{6}}%
+      \only<7-| handout:1>{\roadmap[scale=0.95]{99}}%
     \end{column}
   \end{columns}
 \end{frame}
@@ -184,11 +197,13 @@
         \mathsf{LR}
       \]
       \vskip1mm
+      \onslide<2->
       Two elementary reactions, each with its own rate:
       \begin{align*}
         \text{binding:}   &\quad v_1 = k_\mathsf{on}\,\conc{L}\,\conc{R} \\
         \text{unbinding:} &\quad v_2 = k_\mathsf{off}\,\conc{LR}
       \end{align*}
+      \onslide<3->
       \begin{block}{Law of mass action}
         \small The rate of an elementary reaction is proportional to the product of
         the concentrations of its reactants. The proportionality constant is the
@@ -197,6 +212,7 @@
     \end{column}
     \begin{column}{0.42\textwidth}
       \centering
+      \onslide<1->
       \roadmap[scale=0.62]{1}
       \vskip2mm
       {\scriptsize Units: $k_\mathsf{on}$ in $\mu$M$^{-1}$min$^{-1}$,
@@ -222,6 +238,7 @@
       {\small Reactants are consumed ($-$), products are created ($+$).}
     \end{column}
     \begin{column}{0.48\textwidth}
+      \onslide<2->
       \begin{align*}
         \frac{d\conc{L}}{dt}  &= -k_\mathsf{on}\conc{L}\conc{R} + k_\mathsf{off}\conc{LR}\\[1mm]
         \frac{d\conc{R}}{dt}  &= -k_\mathsf{on}\conc{L}\conc{R} + k_\mathsf{off}\conc{LR}\\[1mm]
@@ -229,6 +246,7 @@
       \end{align*}
     \end{column}
   \end{columns}
+  \onslide<3->
   \takeaway{Ordinary differential equations (ODEs) follow mechanically from the
   list of reactions and their rate laws.}
 \end{frame}
@@ -244,13 +262,14 @@
     \underbrace{\begin{pmatrix}k_\mathsf{on}\conc{L}\conc{R}\\ k_\mathsf{off}\conc{LR}\end{pmatrix}}_{\mathbf{v}(\mathbf{X})}
   \]
   \vskip1mm
+  \onslide<2->
   \[
     S_{ij} = (\text{times species } i \text{ is a product of reaction } j)
            - (\text{times species } i \text{ is a reactant of reaction } j)
   \]
   \begin{itemize}
-    \item $\mathbf{S}$ has one row per species and one column per reaction.
-    \item This form holds for \emph{any} reaction network; only $\mathbf{S}$ and
+    \item<3-> $\mathbf{S}$ has one row per species and one column per reaction.
+    \item<4-> This form holds for \emph{any} reaction network; only $\mathbf{S}$ and
           $\mathbf{v}$ change.
   \end{itemize}
 \end{frame}
@@ -268,10 +287,12 @@
       {\small These appear as linear dependencies among the rows of $\mathbf{S}$.}
     \end{column}
     \begin{column}{0.48\textwidth}
+      \onslide<2->
       \textbf{Equilibrium.} At steady state $v_1 = v_2$:
       \[
         \frac{\conc{L}\conc{R}}{\conc{LR}} = \frac{k_\mathsf{off}}{k_\mathsf{on}} \equiv K_D
       \]
+      \onslide<3->
       Substituting the conservation laws gives a quadratic for $\conc{LR}$:
       \[
         \conc{LR}_\mathsf{eq} = \tfrac12\!\left[\,b - \sqrt{b^2 - 4L_0R_0}\,\right],
@@ -281,6 +302,7 @@
       \]
     \end{column}
   \end{columns}
+  \onslide<4->
   \takeaway{Small models can be solved by hand. Real signaling networks cannot,
   so we solve the ODEs numerically.}
 \end{frame}
@@ -292,16 +314,18 @@
       \[
         \mathbf{X}(t+\Delta t) \approx \mathbf{X}(t) + \Delta t\;\mathbf{S}\,\mathbf{v}(\mathbf{X}(t))
       \]
+      \onslide<2->
       In practice:
       \begin{itemize}
-        \item The equations are \textbf{nonlinear} and usually have no closed-form solution.
-        \item Reactions occur on very different time scales, which makes the system
+        \item<2-> The equations are \textbf{nonlinear} and usually have no closed-form solution.
+        \item<3-> Reactions occur on very different time scales, which makes the system
               \textbf{stiff}: simple methods need impractically small steps.
-        \item Production solvers (CVODE, LSODA) adapt the step size and use implicit
+        \item<4-> Production solvers (CVODE, LSODA) adapt the step size and use implicit
               methods for stiff systems.
       \end{itemize}
     \end{column}
     \begin{column}{0.42\textwidth}
+      \onslide<5->
       \begin{block}{In BioNetGen}
         \small
         \code{simulate(\{method=>"ode",...\})} \\
@@ -323,9 +347,9 @@
           \addplot table[x=time,y=LR]{data/lr_dose_L10.dat};  \addlegendentry{$L_0=10$}
           \addplot table[x=time,y=LR]{data/lr_dose_L1.dat};   \addlegendentry{$L_0=1$}
           \addplot table[x=time,y=LR]{data/lr_dose_L0.1.dat}; \addlegendentry{$L_0=0.1$}
-          \addplot[fsNavy,dashed,line width=0.6pt,domain=0:2]{0.9892};
-          \addplot[fsAccent,dashed,line width=0.6pt,domain=0:2]{0.7298};
-          \addplot[fsTeal,dashed,line width=0.6pt,domain=0:2]{0.0901};
+          \addplot[fsNavy,dashed,line width=0.6pt,domain=0:2,visible on=<2->]{0.9892};
+          \addplot[fsAccent,dashed,line width=0.6pt,domain=0:2,visible on=<2->]{0.7298};
+          \addplot[fsTeal,dashed,line width=0.6pt,domain=0:2,visible on=<2->]{0.0901};
         \end{axis}
       \end{tikzpicture}
     \end{column}
@@ -334,8 +358,10 @@
       $R_0 = 1\,\mu$M, $k_\mathsf{on} = 1\,\mu$M$^{-1}$min$^{-1}$,
       $k_\mathsf{off} = 0.1\,$min$^{-1}$ ($K_D = 0.1\,\mu$M).
       \vskip2mm
+      \onslide<2->
       Dashed lines: $\conc{LR}_\mathsf{eq}$ from the formula on the previous slide.
       \vskip2mm
+      \onslide<3->
       The relaxation rate is $k_\mathsf{on}(\conc{L}+\conc{R}) + k_\mathsf{off}$
       near equilibrium, so higher ligand also means a faster response.
     \end{column}
@@ -348,13 +374,14 @@
       \lstinputlisting[language=bngl,firstline=6,lastline=24,basicstyle=\ttfamily\scriptsize]{\modeldir/stat_step1_binding.bngl}
     \end{column}
     \begin{column}{0.49\textwidth}
+      \onslide<2->
       \lstinputlisting[language=bngl,firstline=26,lastline=40,basicstyle=\ttfamily\scriptsize]{\modeldir/stat_step1_binding.bngl}
       \vskip1mm
       {\scriptsize
       \begin{itemize}
-        \item \textbf{observables}: quantities to output
-        \item \textbf{reaction rules}: \code{<->} is reversible; forward and reverse rate constants
-        \item \textbf{actions} after \code{end model}: generate the network, then simulate
+        \item<3-> \textbf{observables}: quantities to output
+        \item<4-> \textbf{reaction rules}: \code{<->} is reversible; forward and reverse rate constants
+        \item<5-> \textbf{actions} after \code{end model}: generate the network, then simulate
       \end{itemize}}
     \end{column}
   \end{columns}
@@ -367,7 +394,7 @@
     \end{column}
     \begin{column}{0.3\textwidth}
       \small
-      \begin{itemize}
+      \begin{itemize}[<+->]
         \item Open a \code{.bngl} file
         \item Click the \hl{run} button in the editor toolbar
         \item Results go to\\ \code{BNG-results/<model>/}\\ \code{\ \ <timestamp>/}
@@ -386,6 +413,7 @@
     \end{column}
     \begin{column}{0.49\textwidth}
       \centering
+      \onslide<2->
       \includegraphics[width=\linewidth]{vscode_notebook.png}\\[1mm]
       {\small Deeper analysis in Jupyter with PyBioNetGen + libRoadRunner}
     \end{column}
@@ -401,6 +429,7 @@
       \[
         \mathsf{LR} + \mathsf{S} \rightleftharpoons \mathsf{LRS}
       \]
+      \onslide<3->
       New lines in \code{stat\_step2\_recruit.bngl}:
 \begin{lstlisting}[language=bngl,basicstyle=\ttfamily\scriptsize]
 begin parameters
@@ -422,12 +451,15 @@ end reaction rules
     \end{column}
     \begin{column}{0.46\textwidth}
       \centering
+      \onslide<1->
       \roadmap[scale=0.55]{2}
       \vskip2mm
       \raggedright
+      \onslide<2->
       STAT can bind \emph{only} the ligand-bound receptor LR, never free R.
       This is how ligand binding \hl{enables} STAT recruitment.
       \vskip2mm
+      \onslide<4->
       {\small Every new species needs a molecule type; species present at $t=0$
       also need an initial amount.}
     \end{column}
@@ -442,6 +474,7 @@ end reaction rules
       \]
       A receptor-associated kinase (JAK) phosphorylates the docked STAT:
       a \textbf{first-order}, irreversible reaction with $v = k_\mathsf{act}\conc{LRS}$.
+      \onslide<2->
 \begin{lstlisting}[language=bngl]
   kact  1   # STAT activation (1/min)
   LRSp
@@ -449,12 +482,15 @@ end reaction rules
 \end{lstlisting}
       {\scriptsize\color{fsGray}one new line each in parameters, molecule types, and reaction rules}
       \vskip3mm
+      \onslide<4->
       \hl{Problem:} pSTAT never leaves the receptor. Every receptor ends up
       stuck as LRS$_\mathsf{p}$.
     \end{column}
     \begin{column}{0.46\textwidth}
       \centering
+      \onslide<1->
       \roadmap[scale=0.42]{3}\\[1mm]
+      \onslide<3->
       \begin{tikzpicture}
         \begin{axis}[fsplot,width=0.95\linewidth,height=0.5\linewidth,ylabel={$\mu$M},xmax=15,legend above]
           \addplot table[x=time,y=LR]{data/stat_step3_activate.dat};   \addlegendentry{LR}
@@ -476,6 +512,7 @@ end reaction rules
       \]
       Releasing pSTAT frees the receptor to activate another STAT.
       A phosphatase returns free pSTAT to the inactive pool.
+      \onslide<2->
 \begin{lstlisting}[language=bngl]
   kdiss    1    # pSTAT release (1/min)
   kdephos  0.1  # dephosphorylation (1/min)
@@ -483,12 +520,15 @@ end reaction rules
   Srelease: LRSp -> LR + Sp kdiss
   Sdephos:  Sp -> S kdephos
 \end{lstlisting}
+      \onslide<4->
       pSTAT now reaches a steady state set by the balance of activation and
       dephosphorylation.
     \end{column}
     \begin{column}{0.46\textwidth}
       \centering
+      \onslide<1->
       \roadmap[scale=0.42]{4}\\[1mm]
+      \onslide<3->
       \begin{tikzpicture}
         \begin{axis}[fsplot,width=0.95\linewidth,height=0.5\linewidth,ylabel={$\mu$M},legend above]
           \addplot table[x=time,y=pSTAT]{data/stat_step4_release.dat}; \addlegendentry{total pSTAT}
@@ -516,16 +556,19 @@ end reaction rules
 \end{lstlisting}
       \small
       \begin{itemize}
-        \item \textbf{Synthesis}: a species on both sides (\code{GSp}, \code{mSOCS})
+        \item<2-> \textbf{Synthesis}: a species on both sides (\code{GSp}, \code{mSOCS})
               is a template and is not consumed.
-        \item \textbf{Degradation}: \code{0} means nothing; the molecule is removed.
+        \item<3-> \textbf{Degradation}: \code{0} means nothing; the molecule is removed.
       \end{itemize}
       \vskip1mm
+      \onslide<5->
       SOCS accumulates, but it has no target yet, so pSTAT is unaffected.
     \end{column}
     \begin{column}{0.44\textwidth}
       \centering
+      \onslide<1->
       \roadmap[scale=0.42]{5}\\[1mm]
+      \onslide<4->
       \begin{tikzpicture}
         \begin{axis}[fsplot,width=0.95\linewidth,height=0.5\linewidth,ylabel={$\mu$M},legend above]
           \addplot table[x=time,y=pSTAT]{data/stat_step5_transcribe.dat}; \addlegendentry{pSTAT}
@@ -544,10 +587,13 @@ end reaction rules
         \mathsf{LR} + \mathsf{SOCS} \rightleftharpoons \mathsf{LR{\cdot}SOCS}
       \]
       SOCS competes with STAT for the active receptor. LR$\cdot$SOCS cannot recruit STAT,
-      so pSTAT production drops. The loop is closed:
+      so pSTAT production drops.
+      \onslide<2->
+      The loop is closed:
       \[
         \text{pSTAT} \to \text{SOCS} \dashv \text{receptor} \to \text{pSTAT}
       \]
+      \onslide<3->
 \begin{lstlisting}[language=bngl]
   kSOCSon   1     # (1/uM/min)
   kSOCSoff  0.01  # (1/min)
@@ -557,6 +603,7 @@ end reaction rules
     \end{column}
     \begin{column}{0.44\textwidth}
       \centering
+      \onslide<1->
       \roadmap[scale=0.62]{6}
     \end{column}
   \end{columns}
@@ -569,7 +616,7 @@ end reaction rules
         \begin{axis}[fsplot, ylabel={total pSTAT ($\mu$M)}, xmax=120, ymax=6,
                      legend style={at={(0.98,0.22)},anchor=south east}]
           \addplot table[x=time,y=pSTAT]{data/stat_step6_no_feedback.dat}; \addlegendentry{without feedback (\code{kSOCSon = 0})}
-          \addplot table[x=time,y=pSTAT]{data/stat_step6_feedback.dat};    \addlegendentry{with SOCS feedback}
+          \only<2->{\addplot table[x=time,y=pSTAT]{data/stat_step6_feedback.dat};    \addlegendentry{with SOCS feedback}}
         \end{axis}
       \end{tikzpicture}
     \end{column}
@@ -577,12 +624,13 @@ end reaction rules
       \small
       \begin{itemize}
         \setlength\itemsep{1.5mm}
-        \item Early response is identical: SOCS has not been made yet.
-        \item As SOCS accumulates it sequesters receptors, and pSTAT falls to a low
+        \item<3-> Early response is identical: SOCS has not been made yet.
+        \item<4-> As SOCS accumulates it sequesters receptors, and pSTAT falls to a low
               level despite continued ligand.
-        \item The delay comes from transcription and translation.
+        \item<5-> The delay comes from transcription and translation.
       \end{itemize}
       \vskip2mm
+      \onslide<5->
       {\scriptsize Both curves come from \code{stat\_step6\_feedback.bngl}, which runs
       the model twice using \code{setParameter}.}
     \end{column}
@@ -612,7 +660,7 @@ end reaction rules
       \end{tabular}
     \end{column}
     \begin{column}{0.46\textwidth}
-      \begin{itemize}
+      \begin{itemize}[<+(1)->]
         \setlength\itemsep{1.5mm}
         \item 11 lines of BNGL generate \textbf{15 reactions} (4 are reversible)
               among \textbf{12 species}.
@@ -630,21 +678,23 @@ end reaction rules
 
 \begin{frame}{Naming every complex by hand does not scale}
   Our model made strong simplifying assumptions. Relax a few of them:
-  \begin{itemize}
+  \begin{itemize}[<+->]
     \item SOCS can also bind receptors that already carry STAT (LRS, LRS$_\mathsf{p}$)
     \item Ligand can dissociate from \emph{any} receptor complex, not only LR
     \item The receptor has two chains, each recruiting its own STAT
     \item STATs dimerize before entering the nucleus
   \end{itemize}
   \vskip2mm
+  \onslide<+->
   Each feature \hl{multiplies} the number of distinct complexes, and each complex
   needs its own species name and its own copy of every reaction it takes part in.
+  \onslide<+->
   \takeaway{Module 2: represent molecules with internal structure (binding sites and
   states) and write rules that generate the network automatically.}
 \end{frame}
 
 \begin{frame}{ODEs describe average behavior}
-  \begin{itemize}
+  \begin{itemize}[<+->]
     \item ODEs treat concentrations as continuous and deterministic.
     \item In a single cell, some species are present in very small numbers:
           one or two copies of a gene, a few mRNA molecules.
@@ -654,6 +704,7 @@ end reaction rules
           Gillespie algorithm: \code{simulate(\{method=>"ssa",...\})}.
   \end{itemize}
   \vskip2mm
+  \onslide<+->
   {\color{fsGray} We return to stochastic simulation in a later module.}
 \end{frame}
 
@@ -673,7 +724,7 @@ end reaction rules
 \end{frame}
 
 \begin{frame}{Summary}
-  \begin{itemize}
+  \begin{itemize}[<+->]
     \setlength\itemsep{2mm}
     \item A reaction network is defined by its species, reactions, rate laws, and
           initial conditions.

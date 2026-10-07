@@ -50,7 +50,7 @@
 
 \begin{frame}{Goals for this module}
   By the end of this module you should be able to
-  \begin{enumerate}
+  \begin{enumerate}[<+->]
     \setlength\itemsep{1.5mm}
     \item explain why multi-site proteins lead to \hl{combinatorial complexity}
     \item represent molecules with \hl{components}, \hl{states}, and \hl{bonds} in BNGL
@@ -78,22 +78,25 @@
       \end{tabular}
       \vskip3mm
       \raggedright
+      \onslide<2->
       To get total pSTAT we had to list every species that contains it:
 \begin{lstlisting}[language=bngl]
 Molecules pSTAT LRSp Sp GSp
 \end{lstlisting}
     \end{column}
     \begin{column}{0.46\textwidth}
+      \onslide<3->
       \begin{block}{Assumptions we made}
         \small
         \begin{itemize}
-          \item Ligand only leaves an empty receptor
-          \item SOCS and STAT compete for one receptor site
-          \item The receptor is a single chain
-          \item STAT acts as a monomer with one phosphosite
+          \item<3-> Ligand only leaves an empty receptor
+          \item<4-> SOCS and STAT compete for one receptor site
+          \item<5-> The receptor is a single chain
+          \item<6-> STAT acts as a monomer with one phosphosite
         \end{itemize}
       \end{block}
       \vskip1mm
+      \onslide<7->
       {\small Each of these is false for real cytokine receptors. Relaxing any of them
       requires new species, and new copies of every reaction they take part in.}
     \end{column}
@@ -124,6 +127,7 @@ Molecules pSTAT LRSp Sp GSp
           node[midway,below=2pt,font=\tiny,text=fsGray,align=center] {binds receptor\\pTyr};
       \end{tikzpicture}}
       \vskip4mm
+      \onslide<6->
       \begin{tikzpicture}[x=1cm,y=1cm]
         \node[font=\small] at (0,0) {$n$ independent two-state sites};
         \node[font=\small] at (0,-0.55) {$\Rightarrow\; 2^n$ possible states of one molecule};
@@ -134,12 +138,12 @@ Molecules pSTAT LRSp Sp GSp
       \small
       \begin{itemize}
         \setlength\itemsep{1.5mm}
-        \item Each protein has several \textbf{binding domains} and
+        \item<2-> Each protein has several \textbf{binding domains} and
               \textbf{modification sites}.
-        \item Sites can be occupied or modified \emph{in combination}.
-        \item Most interactions depend on only one or two sites: SOCS binding does
+        \item<3-> Sites can be occupied or modified \emph{in combination}.
+        \item<4-> Most interactions depend on only one or two sites: SOCS binding does
               not care whether S727 is phosphorylated.
-        \item Naming every combination is \hl{combinatorial complexity}: a few
+        \item<5-> Naming every combination is \hl{combinatorial complexity}: a few
               interactions imply a huge number of species.
       \end{itemize}
     \end{column}
@@ -152,15 +156,17 @@ Molecules pSTAT LRSp Sp GSp
       A model of the ErbB receptor family with its known binding partners:
       \vskip2mm
       \begin{itemize}
-        \item ErbB3:ErbB1 dimer: $> 3.8\times10^{9}$ states
-        \item ErbB1:ErbB1 dimer: $> 5.5\times10^{10}$ states
+        \item<1-> ErbB3:ErbB1 dimer: $> 3.8\times10^{9}$ states
+        \item<2-> ErbB1:ErbB1 dimer: $> 5.5\times10^{10}$ states
       \end{itemize}
       \vskip3mm
+      \onslide<3->
       Yet the model is built from a manageable number of \hl{rules}, in the tens to
       hundreds.
     \end{column}
     \begin{column}{0.42\textwidth}
       \centering
+      \onslide<1->
       \includegraphics[height=0.72\textheight,trim=548 50 95 80,clip]{creamer_2012_egfr.pdf}
     \end{column}
   \end{columns}
@@ -189,6 +195,7 @@ Molecules pSTAT LRSp Sp GSp
         \draw[pointer] (cm.east) -- (S.west);
       \end{tikzpicture}
       \vskip4mm
+      \onslide<3->
 \begin{lstlisting}[language=bngl]
 begin molecule types
   S(r,Y~0~P,g)
@@ -199,14 +206,14 @@ end molecule types
       \small
       \begin{itemize}
         \setlength\itemsep{1.5mm}
-        \item A \textbf{molecule} is a named object with a list of \textbf{components}
+        \item<1-> A \textbf{molecule} is a named object with a list of \textbf{components}
               in parentheses.
-        \item Components represent \textbf{binding sites} or
+        \item<2-> Components represent \textbf{binding sites} or
               \textbf{modification sites}.
-        \item \code{\textasciitilde} lists the allowed \textbf{states} of a component:
+        \item<3-> \code{\textasciitilde} lists the allowed \textbf{states} of a component:
               \code{Y\textasciitilde0\textasciitilde P}.
-        \item A component can have both a state and a bond.
-        \item A molecule with no components, \code{mSOCS()}, is just a species name,
+        \item<4-> A component can have both a state and a bond.
+        \item<5-> A molecule with no components, \code{mSOCS()}, is just a species name,
               as in Module 1.
       \end{itemize}
     \end{column}
@@ -239,11 +246,11 @@ L(r!1).R(l!1,s!2).S(r!2,Y~P,g)
       \small
       \begin{itemize}
         \setlength\itemsep{1.2mm}
-        \item \code{.} joins molecules in the same complex.
-        \item \code{!1} marks one end of a bond; the matching \code{!1} is the other end.
+        \item<2-> \code{.} joins molecules in the same complex.
+        \item<3-> \code{!1} marks one end of a bond; the matching \code{!1} is the other end.
               Bond labels only need to be unique within a species.
-        \item A component with no \code{!} is \textbf{free}: \code{g} above.
-        \item A species is now a \hl{graph}: molecules are nodes, bonds are edges.
+        \item<4-> A component with no \code{!} is \textbf{free}: \code{g} above.
+        \item<5-> A species is now a \hl{graph}: molecules are nodes, bonds are edges.
               BioNetGen recognizes when two strings describe the same graph.
       \end{itemize}
     \end{column}
@@ -260,21 +267,21 @@ L(r!1).R(l!1,s!2).S(r!2,Y~P,g)
     \toprule
     pattern & LR & LRS & LRS$_\mathsf{p}$ & S$_\mathsf{p}$ & GS$_\mathsf{p}$ & LR$\cdot$SOCS & meaning \\
     \midrule
-    \code{S(Y\textasciitilde P)}   & \no  & \no  & \yes & \yes & \yes & \no  & any phosphorylated STAT \\
-    \code{S(r,Y\textasciitilde P)} & \no  & \no  & \no  & \yes & \yes & \no  & phosphorylated, not on a receptor \\
-    \code{S(r!+)}                  & \no  & \yes & \yes & \no  & \no  & \no  & STAT bound via \code{r} \\
-    \code{R(l!+)}                  & \yes & \yes & \yes & \no  & \no  & \yes & ligand-bound receptor \\
-    \code{R(l!+,s)}                & \yes & \no  & \no  & \no  & \no  & \no  & \ldots{} with docking site free \\
-    \code{R(s!+)}                  & \no  & \yes & \yes & \no  & \no  & \yes & docking site occupied \\
+    \uncover<2->{\code{S(Y\textasciitilde P)}} & \uncover<2->{\no} & \uncover<2->{\no} & \uncover<2->{\yes} & \uncover<2->{\yes} & \uncover<2->{\yes} & \uncover<2->{\no} & \uncover<2->{any phosphorylated STAT} \\
+    \uncover<3->{\code{S(r,Y\textasciitilde P)}} & \uncover<3->{\no} & \uncover<3->{\no} & \uncover<3->{\no} & \uncover<3->{\yes} & \uncover<3->{\yes} & \uncover<3->{\no} & \uncover<3->{phosphorylated, not on a receptor} \\
+    \uncover<4->{\code{S(r!+)}} & \uncover<4->{\no} & \uncover<4->{\yes} & \uncover<4->{\yes} & \uncover<4->{\no} & \uncover<4->{\no} & \uncover<4->{\no} & \uncover<4->{STAT bound via \code{r}} \\
+    \uncover<5->{\code{R(l!+)}} & \uncover<5->{\yes} & \uncover<5->{\yes} & \uncover<5->{\yes} & \uncover<5->{\no} & \uncover<5->{\no} & \uncover<5->{\yes} & \uncover<5->{ligand-bound receptor} \\
+    \uncover<6->{\code{R(l!+,s)}} & \uncover<6->{\yes} & \uncover<6->{\no} & \uncover<6->{\no} & \uncover<6->{\no} & \uncover<6->{\no} & \uncover<6->{\no} & \uncover<6->{\ldots{} with docking site free} \\
+    \uncover<7->{\code{R(s!+)}} & \uncover<7->{\no} & \uncover<7->{\yes} & \uncover<7->{\yes} & \uncover<7->{\no} & \uncover<7->{\no} & \uncover<7->{\yes} & \uncover<7->{docking site occupied} \\
     \bottomrule
   \end{tabular}
   \vskip3mm
   \raggedright
   \begin{itemize}
-    \item \code{!+} \enspace bound to anything \qquad
+    \item<2-> \code{!+} \enspace bound to anything \qquad
           \code{!?} \enspace bound or not \qquad
           no \code{!} \enspace must be free
-    \item Matching is done on the graph, so the pattern can match a molecule anywhere
+    \item<8-> Matching is done on the graph, so the pattern can match a molecule anywhere
           inside a complex.
   \end{itemize}
 \end{frame}
@@ -287,15 +294,18 @@ L(r!1).R(l!1,s!2).S(r!2,Y~P,g)
 Molecules pSTAT LRSp Sp GSp
 \end{lstlisting}
       \vskip2mm
+      \onslide<2->
       \textbf{Module 2}: describe the property
 \begin{lstlisting}[language=bngl]
 Molecules pSTAT S(Y~P)
 \end{lstlisting}
       \small
+      \onslide<3->
       The pattern keeps working when we add new complexes containing pSTAT.
       No observable needs to be rewritten.
     \end{column}
     \begin{column}{0.48\textwidth}
+      \onslide<4->
       \begin{block}{\code{Molecules} vs.\ \code{Species}}
         \small
         \begin{itemize}
@@ -321,16 +331,17 @@ Sbind:  R(l!+,s) + S(r,Y~0) <-> R(l!+,s!1).S(r!1,Y~0)  kSon, kSoff
       \small
       \begin{itemize}
         \setlength\itemsep{1.2mm}
-        \item \textbf{Reactant patterns} (left) say what must be present:
+        \item<2-> \textbf{Reactant patterns} (left) say what must be present:
               a ligand-bound receptor with a free docking site, and an
               unphosphorylated STAT with a free \code{r} site.
-        \item \textbf{Product patterns} (right) say what changes:
+        \item<3-> \textbf{Product patterns} (right) say what changes:
               a bond forms between \code{s} and \code{r}.
-        \item Everything not mentioned is carried along unchanged.
-        \item Rates follow mass action, with the \emph{rule's} rate constant.
+        \item<4-> Everything not mentioned is carried along unchanged.
+        \item<5-> Rates follow mass action, with the \emph{rule's} rate constant.
       \end{itemize}
     \end{column}
     \begin{column}{0.46\textwidth}
+      \onslide<6->
       \begin{block}{What a rule can do}
         \small
         \begin{tabular}{@{}ll@{}}
@@ -376,13 +387,14 @@ end observables
       \small
       \begin{itemize}
         \setlength\itemsep{1.5mm}
-        \item Six molecule types replace twelve species names.
-        \item \textbf{Seed species} are the complexes present at $t=0$. Every other species
+        \item<2-> Six molecule types replace twelve species names.
+        \item<3-> \textbf{Seed species} are the complexes present at $t=0$. Every other species
               is generated from them by the rules.
-        \item The receptor has one docking site \code{s} that STAT and SOCS compete for.
+        \item<4-> The receptor has one docking site \code{s} that STAT and SOCS compete for.
               This is the Module 1 assumption.
       \end{itemize}
       \vskip1mm
+      \onslide<4->
       {\scriptsize File: \code{models/stat\_rbm1\_rules.bngl}}
     \end{column}
   \end{columns}
@@ -402,6 +414,7 @@ Translate:  mSOCS() -> mSOCS() + SOCS(r)                   ktl
 SOCSdeg:    SOCS(r) -> 0                                   kSOCSdeg
 SOCSbind:   R(l!+,s) + SOCS(r) <-> R(l!+,s!1).SOCS(r!1)    kSOCSon, kSOCSoff
 \end{lstlisting}
+  \onslide<2->
   {\small Context encodes the Module 1 assumptions. \code{R(l,s)} in \code{LRbind}: ligand
   binds and leaves only when the docking site is empty. \code{R(l!+,s)} in \code{Sbind}
   and \code{SOCSbind}: only ligand-bound receptors recruit.}
@@ -410,7 +423,7 @@ SOCSbind:   R(l!+,s) + SOCS(r) <-> R(l!+,s!1).SOCS(r!1)    kSOCSon, kSOCSoff
 \begin{frame}{Network generation: rules applied to seed species}
   \begin{columns}[T]
     \begin{column}{0.48\textwidth}
-      \begin{enumerate}
+      \begin{enumerate}[<+->]
         \setlength\itemsep{1.5mm}
         \item Start with the seed species.
         \item Apply every rule to every species (or pair of species) it matches.
@@ -418,21 +431,25 @@ SOCSbind:   R(l!+,s) + SOCS(r) <-> R(l!+,s!1).SOCS(r!1)    kSOCSon, kSOCSoff
         \item Repeat until nothing new appears.
       \end{enumerate}
       \vskip2mm
+      \onslide<5->
       \code{generate\_network()} does this and writes the result to the
       \code{.net} file. ODE or SSA simulation then uses the generated network.
       \vskip2mm
+      \onslide<7->
       \hl{Result:} the same 12 species and 15 reactions as Module 1.
     \end{column}
     \begin{column}{0.48\textwidth}
+      \onslide<6->
       \begin{tikzpicture}
         \begin{axis}[fsplot,ylabel={total pSTAT ($\mu$M)},xmax=120,
                      legend style={at={(0.97,0.95)},anchor=north east}]
           \addplot[fsGold,line width=3.5pt] table[x=time,y=pSTAT]{../module1-kinetics/data/stat_step6_feedback.dat};
           \addlegendentry{Module 1 (named species)}
-          \addplot[fsNavy,line width=1.2pt] table[x=time,y=pSTAT]{data/stat_rbm1.dat};
-          \addlegendentry{Module 2 (rules)}
+          \only<7->{\addplot[fsNavy,line width=1.2pt] table[x=time,y=pSTAT]{data/stat_rbm1.dat};
+          \addlegendentry{Module 2 (rules)}}
         \end{axis}
       \end{tikzpicture}
+      \onslide<7->
       {\scriptsize The curves are identical.}
     \end{column}
   \end{columns}
@@ -448,6 +465,7 @@ SOCSbind:   R(l!+,s) + SOCS(r) <-> R(l!+,s!1).SOCS(r!1)    kSOCSon, kSOCSoff
 \begin{lstlisting}[language=bngl,basicstyle=\ttfamily\scriptsize]
 LRbind:  L(r) + R(l) <-> L(r!1).R(l!1)  kon, koff
 \end{lstlisting}
+      \onslide<2->
       Docking and activation still need bound ligand, but undocking does not,
       so each reversible rule is split in two:
 \begin{lstlisting}[language=bngl,basicstyle=\ttfamily\scriptsize]
@@ -458,6 +476,7 @@ Sact:    R(l!+,s!1).S(r!1,Y~0) -> R(l!+,s!1).S(r!1,Y~P)  kact
       {\small (and likewise for SOCS)}
     \end{column}
     \begin{column}{0.38\textwidth}
+      \onslide<3->
       \begin{block}{One rule, many reactions}
         \small
         \code{LRbind} now generates 4 binding reactions: ligand binds R alone,
@@ -470,7 +489,7 @@ Sact:    R(l!+,s!1).S(r!1,Y~0) -> R(l!+,s!1).S(r!1,Y~P)  kact
         & species & reactions \\
         \midrule
         before & 12 & 15 \\
-        after  & \textbf{15} & \textbf{24} \\
+        \uncover<4->{after} & \uncover<4->{\textbf{15}} & \uncover<4->{\textbf{24}} \\
         \bottomrule
       \end{tabular}
     \end{column}
@@ -495,9 +514,11 @@ SOCSunbind: R(socs!1).SOCS(r!1) -> R(socs) + SOCS(r)  kSOCSoff
     \end{column}
     \begin{column}{0.38\textwidth}
       \small
+      \onslide<2->
       Closer to how SOCS proteins work: SOCS1 inhibits JAK directly, and SOCS3
       inhibits JAK while bound to the receptor.
       \vskip2mm
+      \onslide<3->
       Now a receptor can carry STAT \emph{and} SOCS at the same time.
       \vskip3mm
       \centering
@@ -506,7 +527,7 @@ SOCSunbind: R(socs!1).SOCS(r!1) -> R(socs) + SOCS(r)  kSOCSoff
         & species & reactions \\
         \midrule
         before & 15 & 24 \\
-        after  & \textbf{19} & \textbf{39} \\
+        \uncover<4->{after} & \uncover<4->{\textbf{19}} & \uncover<4->{\textbf{39}} \\
         \bottomrule
       \end{tabular}
     \end{column}
@@ -528,14 +549,15 @@ Sact:      L(r!+,r!2).R(l!2,socs,s!1).S(r!1,Y~0) ->
 \end{lstlisting}
       \small
       \begin{itemize}
-        \item BioNetGen accounts for the two identical ligand sites automatically
+        \item<2-> BioNetGen accounts for the two identical ligand sites automatically
               (statistical factor of 2 in \code{LRbind}).
-        \item Excess bivalent ligand occupies chains one at a time and blocks
+        \item<3-> Excess bivalent ligand occupies chains one at a time and blocks
               crosslinking, so we lower $L_0$ from 10 to 1 $\mu$M.
       \end{itemize}
     \end{column}
     \begin{column}{0.38\textwidth}
       \centering
+      \onslide<1->
       \begin{tikzpicture}[x=1cm,y=1cm,scale=0.9]
         \node[molbox,fill=fsGold!40,minimum width=1.6cm] (L) at (0,1.6) {L};
         \node[site] (L1) at ($(L.south)+(-0.45,0)$) {r};
@@ -550,15 +572,17 @@ Sact:      L(r!+,r!2).R(l!2,socs,s!1).S(r!1,Y~0) ->
         \draw[bond] (R1.south) -- (S1.north); \draw[bond] (R2.south) -- (S2.north);
       \end{tikzpicture}
       \vskip3mm
+      \onslide<4->
       \begin{tabular}{lcc}
         \toprule
         & species & reactions \\
         \midrule
         before & 19 & 39 \\
-        after  & \textbf{40} & \textbf{188} \\
+        \uncover<5->{after} & \uncover<5->{\textbf{40}} & \uncover<5->{\textbf{188}} \\
         \bottomrule
       \end{tabular}
       \vskip1mm
+      \onslide<5->
       {\scriptsize \code{Crosslink} alone generates 36 reactions in each direction.}
     \end{column}
   \end{columns}
@@ -581,6 +605,7 @@ Sdephos: S(r,d,g,Y~P) -> S(r,d,g,Y~0)          kdephos
     \end{column}
     \begin{column}{0.38\textwidth}
       \small
+      \onslide<2->
       We restricted dimerization to free pSTAT. If receptor-bound STATs could
       dimerize too, dimers could bridge receptor complexes into chains of unlimited
       length: an \hl{infinite} network.
@@ -591,7 +616,7 @@ Sdephos: S(r,d,g,Y~P) -> S(r,d,g,Y~0)          kdephos
         & species & reactions \\
         \midrule
         before & 40 & 188 \\
-        after  & \textbf{43} & \textbf{198} \\
+        \uncover<3->{after} & \uncover<3->{\textbf{43}} & \uncover<3->{\textbf{198}} \\
         \bottomrule
       \end{tabular}
     \end{column}
@@ -609,24 +634,28 @@ S(r,Y~0~P,S727~0~P,d,g)
 Sser:  S(S727~0) <-> S(S727~P)  kser, kserdephos
 \end{lstlisting}
       \small
+      \onslide<2->
       The rule mentions only \code{S727}, so it applies to STAT in \emph{every}
       complex: free, receptor-bound, in a dimer, on DNA.
       \vskip2mm
+      \onslide<3->
       Every species containing one STAT now comes in 2 versions, and every species
       containing two STATs in 3 or 4.
     \end{column}
     \begin{column}{0.38\textwidth}
       \centering
       \vskip4mm
+      \onslide<3->
       \begin{tabular}{lcc}
         \toprule
         & species & reactions \\
         \midrule
         before & 43 & 198 \\
-        after  & \textbf{95} & \textbf{663} \\
+        \uncover<4->{after} & \uncover<4->{\textbf{95}} & \uncover<4->{\textbf{663}} \\
         \bottomrule
       \end{tabular}
       \vskip3mm
+      \onslide<4->
       {\small \code{Sser} alone generates 59 forward and 59 reverse reactions.}
     \end{column}
   \end{columns}
@@ -640,9 +669,9 @@ Sser:  S(S727~0) <-> S(S727~P)  kser, kserdephos
             xtick={1,...,6},ymin=5,ymax=1000,enlarge x limits=0.05,
             legend style={at={(0.03,0.97)},anchor=north west},
             every axis plot/.append style={mark=*,mark size=1.6pt}]
-          \addplot table[x=model,y=reactions]{data/network_sizes.dat}; \addlegendentry{reactions}
-          \addplot table[x=model,y=species]{data/network_sizes.dat};   \addlegendentry{species}
-          \addplot table[x=model,y=rules]{data/network_sizes.dat};     \addlegendentry{rules}
+          \addplot[fsTeal] table[x=model,y=rules]{data/network_sizes.dat}; \addlegendentry{rules}
+          \only<2->{\addplot[fsAccent] table[x=model,y=species]{data/network_sizes.dat}; \addlegendentry{species}}
+          \only<3->{\addplot[fsNavy] table[x=model,y=reactions]{data/network_sizes.dat}; \addlegendentry{reactions}}
         \end{semilogyaxis}
       \end{tikzpicture}
     \end{column}
@@ -657,8 +686,10 @@ Sser:  S(S727~0) <-> S(S727~P)  kser, kserdephos
         6 & Ser727 site \\
       \end{tabular}
       \vskip3mm
+      \onslide<4->
       From 11 to 16 rules, the network grows from 15 to 663 reactions.
       \vskip2mm
+      \onslide<5->
       Writing these 663 reactions, and the ODEs for 95 species, by hand would be
       slow and error-prone. \hl{Rules let us write down the mechanism and let the
       software do the bookkeeping.}
@@ -673,9 +704,9 @@ Sser:  S(S727~0) <-> S(S727~P)  kser, kserdephos
         \begin{axis}[fsplot,ylabel={total pSTAT ($\mu$M)},xmax=120,
                      legend style={at={(0.98,0.98)},anchor=north east}]
           \addplot table[x=time,y=pSTAT]{data/stat_rbm1.dat}; \addlegendentry{1: Module 1}
-          \addplot table[x=time,y=pSTAT]{data/stat_rbm3.dat}; \addlegendentry{3: SOCS blocks kinase}
-          \addplot table[x=time,y=pSTAT]{data/stat_rbm4.dat}; \addlegendentry{4: receptor dimers}
-          \addplot table[x=time,y=pSTAT]{data/stat_rbm5.dat}; \addlegendentry{5: STAT dimers}
+          \only<2->{\addplot table[x=time,y=pSTAT]{data/stat_rbm3.dat}; \addlegendentry{3: SOCS blocks kinase}}
+          \only<3->{\addplot table[x=time,y=pSTAT]{data/stat_rbm4.dat}; \addlegendentry{4: receptor dimers}}
+          \only<4->{\addplot table[x=time,y=pSTAT]{data/stat_rbm5.dat}; \addlegendentry{5: STAT dimers}}
         \end{axis}
       \end{tikzpicture}
     \end{column}
@@ -683,12 +714,12 @@ Sser:  S(S727~0) <-> S(S727~P)  kser, kserdephos
       \small
       \begin{itemize}
         \setlength\itemsep{1.5mm}
-        \item All versions show the SOCS-driven pulse.
-        \item Blocking the kinase (3) gives a lower peak and faster shutoff than
+        \item<5-> All versions show the SOCS-driven pulse.
+        \item<6-> Blocking the kinase (3) gives a lower peak and faster shutoff than
               blocking docking (1).
-        \item Dimerization (5) protects pSTAT from the phosphatase, so the response lasts
+        \item<7-> Dimerization (5) protects pSTAT from the phosphatase, so the response lasts
               longer.
-        \item Which mechanism is right is a question for experiments. Rules make it easy
+        \item<8-> Which mechanism is right is a question for experiments. Rules make it easy
               to build and compare the alternatives.
       \end{itemize}
     \end{column}
@@ -708,9 +739,11 @@ Sser:  S(S727~0) <-> S(S727~P)  kser, kserdephos
       \small
       A rule-based model of T cell receptor signaling: 20 molecule types and 129 rules.
       \vskip2mm
+      \onslide<2->
       The number of possible species is too large to enumerate, so the network
       cannot be generated at all.
       \vskip2mm
+      \onslide<3->
       Rule-based models also serve as precise, extensible, visualizable
       representations of what is known about a pathway.
     \end{column}
@@ -729,10 +762,12 @@ Sser:  S(S727~0) <-> S(S727~P)  kser, kserdephos
       \textbf{Indirect}: generate the network, then integrate ODEs or run SSA on it.
       Fast when the network is small. This is what we have done so far.
       \vskip2mm
+      \onslide<2->
       \textbf{Direct (network-free)}: track individual molecules and apply rules to
       them as the simulation runs. Only the complexes that actually form are ever
       represented.
       \vskip2mm
+      \onslide<3->
       \code{simulate(\{method=>"nf",...\})} runs NFsim.
     \end{column}
   \end{columns}
@@ -746,7 +781,7 @@ Sser:  S(S727~0) <-> S(S727~P)  kser, kserdephos
     \end{column}
     \begin{column}{0.46\textwidth}
       \small
-      \begin{itemize}
+      \begin{itemize}[<+->]
         \setlength\itemsep{1.5mm}
         \item The cost of network generation and ODE integration grows with the
               number of reactions.
@@ -779,7 +814,7 @@ Sser:  S(S727~0) <-> S(S727~P)  kser, kserdephos
 \end{frame}
 
 \begin{frame}{Summary}
-  \begin{itemize}
+  \begin{itemize}[<+->]
     \setlength\itemsep{2mm}
     \item Multi-site proteins create \textbf{combinatorial complexity}: a few
           interactions imply many species and reactions.

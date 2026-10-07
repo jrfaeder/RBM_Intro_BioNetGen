@@ -27,12 +27,15 @@ Your `.vscode/settings.json` is ignored by git, so your path stays local. If you
 
 ## Building the slides
 
-Built PDFs are in [Slides/pdf/](Slides/pdf/), so you can download them without building.
+Built PDFs are in [Slides/pdf/](Slides/pdf/), so you can download them without building. Each module has two versions:
+
+- `<module>.pdf` for presenting: bullets and figure elements appear step by step
+- `<module>-handout.pdf` for reading or printing: one page per slide, everything shown
 
 To rebuild, you need a standard TeX Live, MacTeX, or MiKTeX install (pdflatex + latexmk):
 
 ```
-Slides/build.sh                  # build all modules, copy PDFs to Slides/pdf/
+Slides/build.sh                  # build all modules (presentation + handout), copy PDFs to Slides/pdf/
 Slides/build.sh module2-rules    # build one module
 Slides/build.sh --data           # rerun the BioNetGen models first (needs bionetgen on PATH)
 ```
