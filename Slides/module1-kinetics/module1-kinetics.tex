@@ -337,7 +337,7 @@
           \addplot table[x=time,y=LR]{data/lr_dose_L10.dat};  \addlegendentry{$L_0=10$}
           \addplot table[x=time,y=LR]{data/lr_dose_L1.dat};   \addlegendentry{$L_0=1$}
           \addplot table[x=time,y=LR]{data/lr_dose_L0.1.dat}; \addlegendentry{$L_0=0.1$}
-          \addplot[fsNavy,dashed,line width=0.6pt,domain=0:2,visible on=<2->]{0.9892};
+          \addplot[fsNavy,dashed,line width=0.6pt,domain=0:2,visible on=<2->]{0.9890};
           \addplot[fsAccent,dashed,line width=0.6pt,domain=0:2,visible on=<2->]{0.7298};
           \addplot[fsTeal,dashed,line width=0.6pt,domain=0:2,visible on=<2->]{0.0901};
         \end{axis}
@@ -719,21 +719,20 @@ end reaction rules
   {\color{fsGray} We return to stochastic simulation in a later module.}
 \end{frame}
 
-\begin{frame}{Try it yourself}
-  Using the models in \code{models/}:
-  \begin{enumerate}
+\begin{frame}{End-of-class exercises}
+  On the worksheet (\code{Worksheets/module1-exercises.pdf}):
+  \begin{enumerate}[<+->]
     \setlength\itemsep{1.5mm}
-    \item Run \code{stat\_step1\_binding.bngl} at several values of \code{L0} and check
-          the equilibrium against the formula for $\conc{LR}_\mathsf{eq}$.
-    \item In \code{stat\_step4\_release.bngl}, set \code{kdephos} to 0. What happens
-          to pSTAT, and why?
-    \item In \code{stat\_step6\_feedback.bngl}, vary \code{ktl} (translation rate).
-          How do the peak and the late level of pSTAT change?
-    \item Add a reaction that lets SOCS bind \code{LRS} as well as \code{LR}.
-          What new species do you need?
+    \item[A.] Check the ligand--receptor equilibrium against the formula.
+    \item[B.] \hl{Tune the pSTAT pulse}: predict, then test, how six parameters change
+          the time of the peak, its height, and the adapted level.
+    \item[C.] Remove the phosphatase. What sets the final level of pSTAT?
+    \item[D.] Let SOCS bind STAT-loaded receptors. What new species and reactions
+          do you need?
   \end{enumerate}
   \vskip3mm
-  {\small No local setup yet? Paste any of these models into
+  \onslide<+->
+  {\small No local setup yet? Paste any model from \code{models/} into
   \href{\bngplayground}{BNG Playground} (\code{ruleworld.github.io/bngplayground})
   and run it in your browser.}
 \end{frame}
