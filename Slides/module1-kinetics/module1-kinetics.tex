@@ -411,22 +411,25 @@
 \end{frame}
 
 \begin{frame}{BNG Playground: BioNetGen in your browser}
-  \begin{columns}[c]
-    \begin{column}{0.6\textwidth}
-      \begin{itemize}[<+->]
-        \setlength\itemsep{2mm}
-        \item Write, simulate, and analyze BNGL models in a web browser:
-              nothing to install
-        \item Interactive examples for learning rule-based modeling
-        \item Share a model as a link
-        \item Useful for trying the course models on any computer:
-              paste a file from \code{models/} and run it
-      \end{itemize}
+  \begin{columns}[T]
+    \begin{column}{0.66\textwidth}
+      \includegraphics[width=\linewidth]{bngp_reggraph_crop.png}\\[1mm]
+      {\scriptsize\color{fsGray} BNGL editor (left) and the regulatory graph of a
+      binding rule (right)}
     \end{column}
-    \begin{column}{0.36\textwidth}
+    \begin{column}{0.31\textwidth}
+      \small
+      \begin{itemize}[<+->]
+        \setlength\itemsep{1mm}
+        \item No installation: write, simulate, and analyze models
+        \item Built-in examples
+        \item Share a model as a link
+        \item Paste in any file from \code{models/}
+      \end{itemize}
+      \vskip2mm
       \centering
-      \qrcode[height=3.6cm]{\bngplayground}\\[2mm]
-      \href{\bngplayground}{\small ruleworld.github.io/bngplayground}
+      \qrcode[height=2.1cm]{\bngplayground}\\[1mm]
+      \href{\bngplayground}{\scriptsize ruleworld.github.io/bngplayground}
     \end{column}
   \end{columns}
 \end{frame}
