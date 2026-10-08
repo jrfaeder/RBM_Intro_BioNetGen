@@ -321,8 +321,8 @@
         \code{simulate(\{method=>"ode",...\})} \\
         uses CVODE.
         \vskip1mm
-        In Python, \code{model.setup\_simulator()} returns a libRoadRunner simulator
-        for the same model.
+        In Python, \code{bngsim.Simulator(model, method="ode")} runs the same
+        model with CVODE.
       \end{block}
     \end{column}
   \end{columns}
@@ -405,7 +405,7 @@
       \centering
       \onslide<2->
       \includegraphics[width=\linewidth]{vscode_notebook.png}\\[1mm]
-      {\small Deeper analysis in Jupyter with PyBioNetGen + libRoadRunner}
+      {\small Deeper analysis in Jupyter with bngsim}
     \end{column}
   \end{columns}
 \end{frame}
