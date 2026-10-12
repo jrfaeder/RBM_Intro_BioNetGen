@@ -1,0 +1,27 @@
+% Slide pointing to the companion book, shared by all modules.
+% Before \input{../shared/book}, define \bookchapters as itemize entries
+% made with \bookchapter{file-stem}{number}{title}.
+\newcommand{\bookurl}{https://ruleworld.github.io/bionetgen-book/}
+\newcommand{\bookchapter}[3]{%
+  \item \href{\bookurl chapters/#1.html}{Chapter #2: #3}}
+\begin{frame}{The book}
+  \begin{columns}[T]
+    \begin{column}{0.64\textwidth}
+      \emph{Rule-Based Modeling of Biological Systems: Theory and practice with
+      BioNetGen} is an open book that develops the material of this course in
+      more depth, with every model, figure, and exercise.\\[1mm]
+      \href{\bookurl}{ruleworld.github.io/bionetgen-book}
+      \vskip3mm
+      For this module, read:
+      \begin{itemize}
+        \setlength\itemsep{1mm}
+        \bookchapters
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.32\textwidth}
+      \centering
+      \qrcode[height=3cm]{\bookurl}\\[1mm]
+      {\small The book}
+    \end{column}
+  \end{columns}
+\end{frame}
