@@ -2,7 +2,8 @@
 # Regenerate the simulation data and network sizes plotted in the slides by
 # running the rule-based models in ../../models with BioNetGen. Requires
 # `bionetgen` (PyBioNetGen) on PATH.
-# Output: data/stat_rbm<i>.dat (time courses) and data/network_sizes.dat.
+# Output: data/stat_rbm<i>.dat (time courses), data/stat_rbm5_protect.dat
+# (a controlled variant of version 5), and data/network_sizes.dat.
 set -euo pipefail
 cd "$(dirname "$0")"
 MODELS=../../models
@@ -24,4 +25,15 @@ for m in "${models[@]}"; do
   nrxn=$(sed -n '/^begin reactions/,/^end reactions/p' "$net" | grep -vc 'reactions')
   echo "$i $nrules $nspec $nrxn" >> data/network_sizes.dat
 done
+
+# Variant of version 5 for a controlled comparison: dimerization still
+# protects pSTAT from the phosphatase, but monomers can bind the promoter,
+# as in version 4.
+v=stat_rbm5_protect
+sed 's/Gbind:      S(d!+,g) + G(s) <-> S(d!+,g!1).G(s!1)/Gbind:      S(r,Y~P,g) + G(s) <-> S(r,Y~P,g!1).G(s!1)/' \
+  "$MODELS/stat_rbm5_stat_dimer.bngl" > "$TMP/$v.bngl"
+grep -q 'Gbind:      S(r,Y~P,g)' "$TMP/$v.bngl" || { echo "variant substitution failed" >&2; exit 1; }
+bionetgen run -i "$TMP/$v.bngl" -o "$TMP/$v" > "$TMP/$v.log" 2>&1 || { cat "$TMP/$v.log"; exit 1; }
+sed '1s/^#//' "$TMP/$v/$v.gdat" > "data/$v.dat"
+
 cat data/network_sizes.dat

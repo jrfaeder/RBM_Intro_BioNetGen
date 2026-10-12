@@ -46,7 +46,7 @@ end seed species
 begin observables
   Molecules pSTAT  S(Y~P)
   Molecules pS727  S(S727~P)
-  Species   pSTATdimer S(d!1).S(d!1)
+  Species   pSTATdimer S(Y~P,d!1).S(Y~P,d!1)
   Species   Rdimer L(r!1,r!2).R(l!1).R(l!2)
   Molecules mSOCS  mSOCS()
   Molecules SOCS   SOCS()
