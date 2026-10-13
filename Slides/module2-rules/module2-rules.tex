@@ -600,14 +600,17 @@ L(r!1).R(l!1,s) + S(r,Y~0,g) -> L(r!1).R(l!1,s!2).S(r!2,Y~0,g)
 LRbind:  L(r) + R(l) <-> L(r!1).R(l!1)  kon, koff
 \end{lstlisting}
       \onslide<2->
-      Docking and activation still need bound ligand, but undocking does not,
-      so each reversible rule is split in two:
+      Docking and activation still need bound ligand; undocking and release do not.
+      The reversible \code{Sbind} is split in two, and \code{Sact} gets the ligand
+      context that docking used to guarantee:
 \begin{lstlisting}[language=bngl,basicstyle=\ttfamily\scriptsize]
-Sbind:   R(l!+,s) + S(r,Y~0) -> R(l!+,s!1).S(r!1,Y~0)  kSon
-Sunbind: R(s!1).S(r!1,Y~0) -> R(s) + S(r,Y~0)          kSoff
-Sact:    R(l!+,s!1).S(r!1,Y~0) -> R(l!+,s!1).S(r!1,Y~P)  kact
+Sbind:    R(l!+,s) + S(r,Y~0) -> R(l!+,s!1).S(r!1,Y~0)  kSon
+Sunbind:  R(s!1).S(r!1,Y~0) -> R(s) + S(r,Y~0)          kSoff
+Sact:     R(l!+,s!1).S(r!1,Y~0) -> R(l!+,s!1).S(r!1,Y~P)  kact
+Srelease: R(s!1).S(r!1,Y~P) -> R(s) + S(r,Y~P)          kdiss
 \end{lstlisting}
-      {\small (and likewise for SOCS)}
+      {\small \code{Srelease} is unchanged: pSTAT leaves any receptor, with or without
+      ligand. \code{SOCSbind} is split the same way as \code{Sbind}.}
     \end{column}
     \begin{column}{0.38\textwidth}
       \onslide<3->
