@@ -1,5 +1,5 @@
 # Cytokine-STAT-SOCS signaling, rule-based version 6 of 6
-# Relaxation 5: STAT has a second, independent phosphorylation site (Ser727).
+# Relaxation 5: STAT has a second phosphorylation site (Ser727), phosphorylated only in dimers.
 # Units are illustrative: concentrations in uM, time in minutes.
 
 begin model
@@ -76,8 +76,10 @@ begin reaction rules
   mRNAdeg:    mSOCS() -> 0                                     kmdeg
   # Translation
   Translate:  mSOCS() -> mSOCS() + SOCS(r)                     ktl
-  # Ser727 is phosphorylated and dephosphorylated in any context
-  Sser:       S(S727~0) <-> S(S727~P)                          kser, kserdephos
+  # Ser727 is phosphorylated only in a STAT dimer (the kinase is not modeled explicitly)
+  Sser:       S(d!+,S727~0) -> S(d!+,S727~P)                   kser
+  # A phosphatase removes the Ser727 phosphate in any context
+  Sserdephos: S(S727~P) -> S(S727~0)                           kserdephos
   # Free SOCS degradation
   SOCSdeg:    SOCS(r) -> 0                                     kSOCSdeg
   # SOCS binds a ligand-bound receptor

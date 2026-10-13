@@ -9,7 +9,13 @@
 
 \graphicspath{{figures/}}
 \newcommand{\bngplayground}{https://ruleworld.github.io/bngplayground/}
+\newcommand{\bngfeedback}{https://ruleworld.github.io/bngplayground/feedback.html}
 \newcommand{\modeldir}{../../models}
+\newcommand{\modelfile}[1]{%
+  \begin{tikzpicture}[remember picture,overlay]
+    \node[anchor=north east,font=\scriptsize,text=fsGray,inner sep=0]
+      at ([xshift=-8mm,yshift=-14mm]current page.north east) {File: \texttt{models/#1}};
+  \end{tikzpicture}}
 \newcommand{\yes}{{\color{fsGreen}\checkmark}}
 \newcommand{\no}{{\color{fsAccent}$\times$}}
 
@@ -144,6 +150,7 @@ Molecules pSTAT LRSp Sp GSp
       \end{tikzpicture}
     \end{column}
     \begin{column}{0.44\textwidth}
+      \onslide<1->
       \small
       \begin{itemize}
         \setlength\itemsep{1.5mm}
@@ -213,6 +220,7 @@ end molecule types
 \end{lstlisting}
     \end{column}
     \begin{column}{0.46\textwidth}
+      \onslide<1->
       \small
       \begin{itemize}
         \setlength\itemsep{1.5mm}
@@ -278,7 +286,7 @@ L(r!1).R(l!1,s!2).S(r!2,Y~P,g)
   \vskip3mm
   \raggedright
   \begin{itemize}
-    \item<2-> \code{!+} \enspace bound to anything \qquad
+    \item<4-> \code{!+} \enspace bound to anything \qquad
           \code{!?} \enspace bound or not \qquad
           no \code{!} \enspace must be free
     \item<8-> Matching is done on the graph, so the pattern can match a molecule anywhere
@@ -309,16 +317,50 @@ Molecules pSTAT S(Y~P)
       \begin{block}{\code{Molecules} vs.\ \code{Species}}
         \small
         \begin{itemize}
-          \item \code{Molecules} counts every \emph{match}. A STAT dimer with two
-                pTyr contributes 2 to \code{S(Y\textasciitilde P)}.
-          \item \code{Species} counts each matching \emph{complex} once.
+          \item \code{Molecules} counts every \emph{match} of the pattern.
+          \item \code{Species} counts each \emph{complex} that contains a match, once.
         \end{itemize}
 \begin{lstlisting}[language=bngl]
-Species pSTATdimer S(d!1).S(d!1)
+Molecules pSTAT     S(Y~P)
+Species   pSTATcplx S(Y~P)
 \end{lstlisting}
+        A complex with two pSTATs adds 2 to \code{pSTAT} but 1 to \code{pSTATcplx}.
       \end{block}
     \end{column}
   \end{columns}
+\end{frame}
+
+\begin{frame}{Different patterns can count the same thing}
+  Suppose STAT can also dimerize through a site \code{d}, as in version 5 of our model
+  (\code{stat\_rbm5\_stat\_dimer.bngl}). The pattern you write depends on what you want
+  to count.
+  \vskip2mm
+  \centering
+  \small
+  \begin{tabular}{@{}llll@{}}
+    \toprule
+    quantity & observable & & at 30 min ($\mu$M) \\
+    \midrule
+    \uncover<2->{phosphorylated STAT molecules} & \uncover<2->{\code{Molecules}} & \uncover<2->{\code{S(Y\textasciitilde P)}} & \uncover<2->{3.17} \\
+    \addlinespace[1.5mm]
+    \uncover<3->{STAT molecules in dimers} & \uncover<3->{\code{Molecules}} & \uncover<3->{\code{S(d!+)}} & \uncover<3->{2.68} \\
+    & \uncover<3->{\code{Molecules}} & \uncover<3->{\code{S(Y\textasciitilde P,d!+)}} & \uncover<3->{2.68} \\
+    & \uncover<3->{\code{Molecules}} & \uncover<3->{\code{S(d!1).S(d!1)}} & \uncover<3->{2.68} \\
+    \addlinespace[1.5mm]
+    \uncover<4->{STAT dimers} & \uncover<4->{\code{Species}} & \uncover<4->{\code{S(d!+)}} & \uncover<4->{1.34} \\
+    & \uncover<4->{\code{Species}} & \uncover<4->{\code{S(d!1).S(d!1)}} & \uncover<4->{1.34} \\
+    \bottomrule
+  \end{tabular}
+  \vskip1mm
+  \raggedright
+  \begin{itemize}
+    \setlength\itemsep{0.5mm}
+    \item<5-> \code{S(Y\textasciitilde P,d!+)} matches the same molecules as
+          \code{S(d!+)} only because STAT dimerizes only when phosphorylated and is
+          not dephosphorylated in a dimer. Other rules could make them differ.
+    \item<6-> \code{Molecules S(d!1).S(d!1)} gives 2 per dimer for a different reason:
+          the pattern is symmetric, so it maps onto each dimer two ways.
+  \end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]{Rules transform patterns}
@@ -477,9 +519,10 @@ SOCSbind:   R(l!+,s) + SOCS(r) <-> R(l!+,s!1).SOCS(r!1)    kSOCSon, kSOCSoff
   and \code{SOCSbind}: only ligand-bound receptors recruit.}
 \end{frame}
 
-\begin{frame}{Network generation: rules applied to seed species}
+\begin{frame}[fragile]{Network generation: rules applied to seed species}
   \begin{columns}[T]
-    \begin{column}{0.48\textwidth}
+    \begin{column}{0.34\textwidth}
+      \small
       \begin{enumerate}[<+->]
         \setlength\itemsep{1.5mm}
         \item Start with the seed species.
@@ -487,26 +530,59 @@ SOCSbind:   R(l!+,s) + SOCS(r) <-> R(l!+,s!1).SOCS(r!1)    kSOCSon, kSOCSoff
         \item Add any new species and reactions produced.
         \item Repeat until nothing new appears.
       \end{enumerate}
+    \end{column}
+    \begin{column}{0.63\textwidth}
+      \onslide<1->
+      \small
+      \begin{tabular}{@{}cll@{}}
+        \toprule
+        round & rule & new species \\
+        \midrule
+        \uncover<5->{1} & \uncover<5->{\code{LRbind}} & \uncover<5->{\code{L(r!1).R(l!1,s)}} \\
+        \uncover<6->{2} & \uncover<6->{\code{Sbind}} & \uncover<6->{\code{L(r!1).R(l!1,s!2).S(r!2,Y\textasciitilde0,g)}} \\
+        \uncover<8->{3} & \uncover<8->{\code{Sact}} & \uncover<8->{\code{L(r!1).R(l!1,s!2).S(r!2,Y\textasciitilde P,g)}} \\
+        \uncover<8->{4} & \uncover<8->{\code{Srelease}} & \uncover<8->{\code{S(r,Y\textasciitilde P,g)}} \\
+        \uncover<8->{5} & \uncover<8->{\code{Gbind}} & \uncover<8->{\code{S(r,Y\textasciitilde P,g!1).G(s!1)}} \\
+        \uncover<8->{6} & \uncover<8->{\code{Transcribe}} & \uncover<8->{\code{mSOCS()}} \\
+        \uncover<8->{7} & \uncover<8->{\code{Translate}} & \uncover<8->{\code{SOCS(r)}} \\
+        \uncover<8->{8} & \uncover<8->{\code{SOCSbind}} & \uncover<8->{\code{L(r!1).R(l!1,s!2).SOCS(r!2)}} \\
+        \uncover<9->{9} & \uncover<9->{---} & \uncover<9->{none: done} \\
+        \bottomrule
+      \end{tabular}
       \vskip2mm
-      \onslide<5->
-      \code{generate\_network()} does this and writes the result to the
+      \begin{uncoverenv}<7->
+      {\footnotesize Round 2: \code{R(l!+,s)} in \code{Sbind} matches the receptor in
+      \code{L(r!1).R(l!1,s)}, made in round 1, and \code{S(r,Y\textasciitilde0)} matches
+      the seed STAT. The rule adds a bond between them:}
+\begin{lstlisting}[language=bngl,basicstyle=\ttfamily\scriptsize]
+L(r!1).R(l!1,s) + S(r,Y~0,g) -> L(r!1).R(l!1,s!2).S(r!2,Y~0,g)
+\end{lstlisting}
+      \end{uncoverenv}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{The generated network reproduces Module 1}
+  \begin{columns}[T]
+    \begin{column}{0.44\textwidth}
+      \code{generate\_network()} carries out these rounds and writes the result to the
       \code{.net} file. ODE or SSA simulation then uses the generated network.
-      \vskip2mm
-      \onslide<7->
+      \vskip3mm
+      \onslide<2->
       \hl{Result:} the same 12 species and 15 reactions as Module 1.
     \end{column}
-    \begin{column}{0.48\textwidth}
-      \onslide<6->
+    \begin{column}{0.52\textwidth}
+      \onslide<1->
       \begin{tikzpicture}
         \begin{axis}[fsplot,ylabel={total pSTAT ($\mu$M)},xmax=120,
                      legend style={at={(0.97,0.95)},anchor=north east}]
           \addplot[fsGold,line width=3.5pt] table[x=time,y=pSTAT]{../module1-kinetics/data/stat_step6_feedback.dat};
           \addlegendentry{Module 1 (named species)}
-          \only<7->{\addplot[fsNavy,line width=1.2pt] table[x=time,y=pSTAT]{data/stat_rbm1.dat};
+          \only<2->{\addplot[fsNavy,line width=1.2pt] table[x=time,y=pSTAT]{data/stat_rbm1.dat};
           \addlegendentry{Module 2 (rules)}}
         \end{axis}
       \end{tikzpicture}
-      \onslide<7->
+      \onslide<2->
       {\scriptsize The curves are identical.}
     \end{column}
   \end{columns}
@@ -516,6 +592,7 @@ SOCSbind:   R(l!+,s) + SOCS(r) <-> R(l!+,s!1).SOCS(r!1)    kSOCSon, kSOCSoff
 \section{Relaxing the assumptions}
 
 \begin{frame}[fragile]{1.\ Ligand can leave any receptor complex}
+  \modelfile{stat\_rbm2\_ligand\_release.bngl}
   \begin{columns}[T]
     \begin{column}{0.58\textwidth}
       Remove the context \code{s} from the ligand rule:
@@ -554,6 +631,7 @@ Sact:    R(l!+,s!1).S(r!1,Y~0) -> R(l!+,s!1).S(r!1,Y~P)  kact
 \end{frame}
 
 \begin{frame}[fragile]{2.\ SOCS binds its own site and blocks kinase activity}
+  \modelfile{stat\_rbm3\_socs\_site.bngl}
   \begin{columns}[T]
     \begin{column}{0.58\textwidth}
       Give the receptor a separate SOCS site. SOCS no longer blocks docking;
@@ -592,6 +670,7 @@ SOCSunbind: R(socs!1).SOCS(r!1) -> R(socs) + SOCS(r)  kSOCSoff
 \end{frame}
 
 \begin{frame}[fragile]{3.\ Cytokines bring two receptor chains together}
+  \modelfile{stat\_rbm4\_receptor\_dimer.bngl}
   \begin{columns}[T]
     \begin{column}{0.58\textwidth}
       In the simplest case, a bivalent ligand \code{L(r,r)} crosslinks two identical
@@ -616,8 +695,8 @@ Sact:      L(r!+,r!2).R(l!2,socs,s!1).S(r!1,Y~0) ->
       \centering
       \onslide<1->
       % A species generated from stat_rbm4_receptor_dimer.bngl (bookutils.species_diagram)
-      \includegraphics[height=0.5\textheight]{diagram_receptor_dimer.pdf}
-      \vskip3mm
+      \includegraphics[height=0.4\textheight]{diagram_receptor_dimer.pdf}
+      \vskip1mm
       \onslide<4->
       \begin{tabular}{lcc}
         \toprule
@@ -635,6 +714,7 @@ Sact:      L(r!+,r!2).R(l!2,socs,s!1).S(r!1,Y~0) ->
 \end{frame}
 
 \begin{frame}[fragile]{4.\ STATs act as dimers}
+  \modelfile{stat\_rbm5\_stat\_dimer.bngl}
   \begin{columns}[T]
     \begin{column}{0.58\textwidth}
       Add a dimerization site. Free pSTAT dimerizes, only dimers bind the SOCS
@@ -670,19 +750,22 @@ Sdephos: S(r,d,g,Y~P) -> S(r,d,g,Y~0)          kdephos
 \end{frame}
 
 \begin{frame}[fragile]{5.\ A second phosphorylation site doubles everything}
+  \modelfile{stat\_rbm6\_ser727.bngl}
   \begin{columns}[T]
     \begin{column}{0.58\textwidth}
-      STAT3 is also phosphorylated on Ser727. We assume this is independent of Tyr705;
-      context could change that. One new component and \emph{one} rule:
+      STAT3 is also phosphorylated on Ser727. We do not model the kinase, but assume it
+      acts only on STAT in a dimer. Phosphorylation and dephosphorylation now have
+      different context, so each gets its own rule:
 \begin{lstlisting}[language=bngl,basicstyle=\ttfamily\scriptsize]
 S(r,Y~0~P,S727~0~P,d,g)
 
-Sser:  S(S727~0) <-> S(S727~P)  kser, kserdephos
+Sser:       S(d!+,S727~0) -> S(d!+,S727~P)  kser
+Sserdephos: S(S727~P) -> S(S727~0)          kserdephos
 \end{lstlisting}
       \small
       \onslide<2->
-      The rule mentions only \code{S727}, so it applies to STAT in \emph{every}
-      complex: free, receptor-bound, in a dimer, on DNA.
+      The phosphatase acts in any context, and pS727 stays on STAT when a dimer comes
+      apart. STAT carries it into every complex: free, receptor-bound, in a dimer, on DNA.
       \vskip2mm
       \onslide<3->
       Every species containing one STAT now comes in 2 versions, and every species
@@ -697,12 +780,13 @@ Sser:  S(S727~0) <-> S(S727~P)  kser, kserdephos
         & species & reactions \\
         \midrule
         before & 43 & 198 \\
-        \uncover<4->{after} & \uncover<4->{\textbf{95}} & \uncover<4->{\textbf{663}} \\
+        \uncover<4->{after} & \uncover<4->{\textbf{95}} & \uncover<4->{\textbf{612}} \\
         \bottomrule
       \end{tabular}
       \vskip3mm
       \onslide<4->
-      {\small \code{Sser} alone generates 59 forward and 59 reverse reactions.}
+      {\small \code{Sser} generates only 8 reactions. \code{Sserdephos}, which applies
+      everywhere, generates 59.}
     \end{column}
   \end{columns}
 \end{frame}
@@ -733,10 +817,10 @@ Sser:  S(S727~0) <-> S(S727~P)  kser, kserdephos
       \end{tabular}
       \vskip3mm
       \onslide<4->
-      From 11 to 16 rules, the network grows from 15 to 663 reactions.
+      From 11 to 17 rules, the network grows from 15 to 612 reactions.
       \vskip2mm
       \onslide<5->
-      Writing these 663 reactions, and the ODEs for 95 species, by hand would be
+      Writing these 612 reactions, and the ODEs for 95 species, by hand would be
       slow and error-prone. \hl{Rules let us write down the mechanism and let the
       software do the bookkeeping.}
     \end{column}
@@ -759,7 +843,7 @@ Sser:  S(S727~0) <-> S(S727~P)  kser, kserdephos
     \begin{column}{0.24\textwidth}
       \small
       \onslide<3->
-      The network grew from 15 to 663 reactions.
+      The network grew from 15 to 612 reactions.
       \vskip2mm
       \onslide<4->
       The contact map, like the rules, stays small enough to read at a glance.
@@ -792,6 +876,7 @@ Sser:  S(S727~0) <-> S(S727~P)  kser, kserdephos
       \end{tikzpicture}
     \end{column}
     \begin{column}{0.3\textwidth}
+      \onslide<1->
       \footnotesize
       \begin{itemize}
         \setlength\itemsep{1mm}
@@ -828,6 +913,7 @@ Sser:  S(S727~0) <-> S(S727~P)  kser, kserdephos
       representations of what is known about a pathway.
     \end{column}
   \end{columns}
+  \onslide<1->
   \source{Chylek et al., \emph{PLOS One} (2014)}
 \end{frame}
 
@@ -876,7 +962,40 @@ Sser:  S(S727~0) <-> S(S727~P)  kser, kserdephos
 \end{frame}
 
 % ======================================================================
-\begin{frame}{Try it yourself}
+\begin{frame}{Try it yourself: five BNG Playground tasks}
+  \begin{columns}[T]
+    \begin{column}{0.66\textwidth}
+      \small
+      \begin{enumerate}
+        \setlength\itemsep{1.2mm}
+        \item Open the \href{\bngfeedback}{feedback form} and fill in
+              \emph{About you}.
+        \item Click \emph{Draw a task}. You get a random model from the Playground's
+              built-in library and one analysis to run on it.
+        \item Open the model, run the analysis, and fill in the report for that task.
+        \item Repeat until you have done \textbf{five} tasks.
+        \item Answer the usability and open questions, then click
+              \emph{Send feedback}.
+      \end{enumerate}
+      \vskip2mm
+      {\footnotesize The analyses include time courses, stochastic and network-free
+      runs, rule cartoons, parameter scans, sensitivity analysis, steady states,
+      bifurcation diagrams, and reaction fluxes. As you go, notice how many
+      different systems have been modeled with rules.}
+    \end{column}
+    \begin{column}{0.31\textwidth}
+      \centering
+      \vskip4mm
+      \qrcode[height=2.6cm]{\bngfeedback}\\[1mm]
+      \href{\bngfeedback}{\scriptsize ruleworld.github.io/bngplayground/\\feedback.html}
+      \vskip3mm
+      {\scriptsize\color{fsGray} Answers are saved in your browser as you type, so you
+      can stop and come back.}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Additional exploration}
   Using \code{models/stat\_rbm*.bngl}:
   \begin{enumerate}
     \setlength\itemsep{1.5mm}
