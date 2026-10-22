@@ -1,0 +1,107 @@
+# Cytokine signaling through STAT1 and STAT3, for sensitivity analysis and fitting.
+# Built on stat_rbm3_socs_site.bngl: STAT1 and STAT3 compete for the receptor
+# docking site, only pSTAT3 induces SOCS3, and SOCS3 blocks the receptor kinase.
+#
+# Units: amounts are copy numbers (molecules per cell), time is in seconds.
+# Rate constants are given in standard units (1/M/s, 1/s) and converted to
+# per-molecule rates below.
+
+begin model
+begin parameters
+  # Physical constants and volumes
+  NA          6.022e23      # Avogadro's number (1/mol)
+  Vcyt        1e-12         # cytoplasmic volume (L), about 1 pL
+  Vnuc        2e-13         # nuclear volume (L)
+  cell_dens   1e9           # cells per liter of medium (1e6 per mL)
+  Vext        1/cell_dens   # medium volume per cell (L)
+
+  # Amounts (treated as known)
+  L_conc      1e-9          # ligand concentration in the medium (M)
+  L0          L_conc*NA*Vext   # ligand molecules per cell volume of medium
+  R0          5000          # receptors per cell
+  S1_0        1e5           # STAT1 per cell
+  S3_0        2e5           # STAT3 per cell
+  G0          2             # SOCS3 gene copies per cell
+
+  # Rate constants in standard units (to be estimated)
+  kon         1e7           # ligand-receptor association (1/M/s)
+  koff        1e-3          # ligand-receptor dissociation (1/s)
+  kS1on       3e5           # STAT1 docking (1/M/s)
+  kS1off      1             # STAT1 undocking (1/s)
+  kS3on       1e6           # STAT3 docking (1/M/s)
+  kS3off      0.5           # STAT3 undocking (1/s)
+  kact        0.2           # phosphorylation of docked STAT (1/s)
+  kdiss       0.5           # release of docked pSTAT (1/s)
+  kS1dephos   2e-3          # pSTAT1 dephosphorylation (1/s)
+  kS3dephos   3e-3          # pSTAT3 dephosphorylation (1/s)
+  kGon        1e7           # pSTAT3-promoter association (1/M/s)
+  kGoff       0.05          # pSTAT3-promoter dissociation (1/s)
+  ktx         0.1           # transcription per bound promoter (1/s)
+  kmdeg       1e-3          # SOCS3 mRNA degradation (1/s)
+  ktl         0.05          # translation per mRNA (1/s)
+  kSOCSdeg    5e-4          # SOCS3 protein degradation (1/s)
+  kSOCSon     1e6           # SOCS3-receptor association (1/M/s)
+  kSOCSoff    0.01          # SOCS3-receptor dissociation (1/s)
+
+  # Bimolecular rate constants per molecule (1/s): divide by NA*V, where V is
+  # the volume in which the reaction takes place
+  kon_m       kon/(NA*Vext)
+  kS1on_m     kS1on/(NA*Vcyt)
+  kS3on_m     kS3on/(NA*Vcyt)
+  kGon_m      kGon/(NA*Vnuc)
+  kSOCSon_m   kSOCSon/(NA*Vcyt)
+end parameters
+begin molecule types
+  L(r)                       # ligand with one receptor-binding site
+  R(l,s,socs)                # receptor chain: ligand site l, STAT docking site s, SOCS site socs
+  STAT1(r,Y~0~P)             # STAT1: receptor site r, tyrosine Y701
+  STAT3(r,Y~0~P,g)           # STAT3: receptor site r, tyrosine Y705, DNA site g
+  G(s)                       # SOCS3 gene promoter with a STAT3-binding site
+  mSOCS()                    # SOCS3 mRNA
+  SOCS(r)                    # SOCS3 protein with a receptor-binding site
+end molecule types
+begin seed species
+  L(r)             L0
+  R(l,s,socs)      R0
+  STAT1(r,Y~0)     S1_0
+  STAT3(r,Y~0,g)   S3_0
+  G(s)             G0
+end seed species
+begin observables
+  Molecules pSTAT1  STAT1(Y~P)
+  Molecules pSTAT3  STAT3(Y~P)
+  Molecules LR      L(r!1).R(l!1)
+  Molecules mSOCS   mSOCS()
+  Molecules SOCS    SOCS()
+end observables
+begin reaction rules
+  # Ligand binds a free receptor
+  LRbind:      L(r) + R(l) <-> L(r!1).R(l!1)                            kon_m, koff
+  # STAT1 and STAT3 compete for the docking site on a ligand-bound receptor
+  S1bind:      R(l!+,s) + STAT1(r,Y~0) -> R(l!+,s!1).STAT1(r!1,Y~0)     kS1on_m
+  S1unbind:    R(s!1).STAT1(r!1,Y~0) -> R(s) + STAT1(r,Y~0)             kS1off
+  S3bind:      R(l!+,s) + STAT3(r,Y~0) -> R(l!+,s!1).STAT3(r!1,Y~0)     kS3on_m
+  S3unbind:    R(s!1).STAT3(r!1,Y~0) -> R(s) + STAT3(r,Y~0)             kS3off
+  # The receptor kinase phosphorylates either docked STAT unless SOCS3 is bound
+  S1act:       R(l!+,socs,s!1).STAT1(r!1,Y~0) -> R(l!+,socs,s!1).STAT1(r!1,Y~P)   kact
+  S3act:       R(l!+,socs,s!1).STAT3(r!1,Y~0) -> R(l!+,socs,s!1).STAT3(r!1,Y~P)   kact
+  # Phosphorylated STATs leave the receptor
+  S1release:   R(s!1).STAT1(r!1,Y~P) -> R(s) + STAT1(r,Y~P)             kdiss
+  S3release:   R(s!1).STAT3(r!1,Y~P) -> R(s) + STAT3(r,Y~P)             kdiss
+  # Phosphatases act on free pSTATs
+  S1dephos:    STAT1(r,Y~P) -> STAT1(r,Y~0)                             kS1dephos
+  S3dephos:    STAT3(r,g,Y~P) -> STAT3(r,g,Y~0)                         kS3dephos
+  # pSTAT3 binds the SOCS3 promoter
+  Gbind:       STAT3(r,Y~P,g) + G(s) <-> STAT3(r,Y~P,g!1).G(s!1)        kGon_m, kGoff
+  # Bound promoter is transcribed
+  Transcribe:  G(s!+) -> G(s!+) + mSOCS()                               ktx
+  mRNAdeg:     mSOCS() -> 0                                             kmdeg
+  Translate:   mSOCS() -> mSOCS() + SOCS(r)                             ktl
+  SOCSdeg:     SOCS(r) -> 0                                             kSOCSdeg
+  # SOCS3 binds its own site on a ligand-bound receptor
+  SOCSbind:    R(l!+,socs) + SOCS(r) -> R(l!+,socs!1).SOCS(r!1)         kSOCSon_m
+  SOCSunbind:  R(socs!1).SOCS(r!1) -> R(socs) + SOCS(r)                 kSOCSoff
+end reaction rules
+end model
+generate_network({overwrite=>1})
+simulate({method=>"ode",t_end=>7200,n_steps=>240})

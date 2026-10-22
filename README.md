@@ -2,9 +2,9 @@ Slides and material introducing rule-based modeling with BioNetGen and Python. U
 
 ## Layout
 
-- `models/` — BNGL model files. `stat_step1_binding.bngl` … `stat_step6_feedback.bngl` build the Module 1 cytokine–STAT–SOCS model one reaction step at a time. `stat_rbm1_rules.bngl` … `stat_rbm6_ser727.bngl` are the Module 2 rule-based versions: the same model written with structured molecules, then extended one assumption at a time.
-- `notebooks/` — Jupyter notebooks (simulation with bngsim, parameter fitting with pyPESTO), plus the data file used for fitting (`mm.csv`) and SBML exports. Notebooks load models from `../models/`, so run them from inside `notebooks/`.
-- `Slides/` — lecture slides. `Slides/theme/` holds the shared beamer theme; each module (`Slides/module1-kinetics/`, `Slides/module2-rules/`) has its own folder, and built PDFs are in `Slides/pdf/`. The 2025 PowerPoint deck is kept for reference.
+- `models/` — BNGL model files. `stat_step1_binding.bngl` … `stat_step6_feedback.bngl` build the Module 1 cytokine–STAT–SOCS model one reaction step at a time. `stat_rbm1_rules.bngl` … `stat_rbm6_ser727.bngl` are the Module 2 rule-based versions: the same model written with structured molecules, then extended one assumption at a time. `stat1_stat3.bngl` is the Module 3 model: STAT1 and STAT3 competing for the receptor, in copy numbers, used for sensitivity analysis and fitting.
+- `notebooks/` — Jupyter notebooks (simulation with bngsim, parameter fitting with pyPESTO), plus the data file used for fitting (`mm.csv`) and SBML exports. `stat1_stat3_fitting.ipynb` is the Module 3 worked example (sensitivity analysis, identifiability, multistart fitting, profiles, experimental design); it writes `stat1_stat3_data.csv` and the figures in `Slides/module3-estimation/figures/`. Notebooks load models from `../models/`, so run them from inside `notebooks/`.
+- `Slides/` — lecture slides. `Slides/theme/` holds the shared beamer theme; each module (`Slides/module1-kinetics/`, `Slides/module2-rules/`, `Slides/module3-estimation/`) has its own folder, and built PDFs are in `Slides/pdf/`. The 2025 PowerPoint deck is kept for reference.
 - `Worksheets/` — printable end-of-class worksheets (Markdown source and PDF). Build with `Worksheets/build.sh` (needs pandoc and Google Chrome). Answer keys live in `Worksheets/keys/`, which is not tracked in git.
 - `BNG-results/` — output from running models with the BioNetGen VS Code extension (see Setup below; not tracked in git)
 
